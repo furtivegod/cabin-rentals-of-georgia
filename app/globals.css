@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Fanwood+Text:ital,wght@0,400;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Override Tailwind's Preflight reset - restore default margins */
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+pre {
+  margin: revert;
+}
+
+.block p {
+  margin: revert; /* Also revert paragraph margin */
+}
+
+/* Restore default list styles */
+.block ul, ol {
+  margin: revert;
+  padding-left: revert;
+  list-style: revert;
+}
+
+.block li {
+  margin: revert;
+  display: revert;
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+* {
+  font-family: 'Fanwood Text', serif;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  font-family: 'Fanwood Text', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #533e27;
+}
+
+h1 {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 220%;
+  color: #7c2c00;
+  line-height: 100%;
+  margin: 15px 0;
+}
+
+.block h2 {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 170%;
+  line-height: 100%;
+  color: #7c2c00;
+}
+
+.block a, .block a:visited {
+  color: #7c2c00;
+  text-decoration: underline;
+}
+
+/* Pagination styles */
+.pagination {
+  font-family: 'Fanwood Text', serif;
+  color: #533e27;
+}
+
+.pagination-link {
+  color: #533e27;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.pagination-link:hover {
+  color: #7c2c00;
+}
+
+.pagination-current {
+  font-weight: bold;
+  color: #533e27;
+  /* Not underlined - current page */
+}
+
+.pagination-disabled {
+  color: #999;
+  /* Not clickable, grayed out */
+}
+
+.pagination-ellipsis {
+  color: #533e27;
+}
+
+/* Clearfix utility */
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Link styles */
+a {
+  transition: color 0.2s ease;
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.2s ease;
+}
+
+/* Form input focus styles */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/* Image optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Hero Slider Animations - Keyframes only (cannot be converted to Tailwind) */
+.caption-title,
+.caption-body {
+  position: relative;
+  opacity: 0;
+}
+
+/* Reset states for inactive slides */
+.caption-title.fadeleft:not(.animate-in) {
+  transform: translateX(20px);
+}
+
+.caption-body.fadeleft:not(.animate-in) {
+  transform: translateX(20px);
+}
+
+.caption-title.faderight:not(.animate-in) {
+  transform: translateX(-20px);
+}
+
+.caption-body.faderight:not(.animate-in) {
+  transform: translateX(-20px);
+}
+
+/* Fade Left Animation */
+.caption-title.fadeleft.animate-in {
+  animation: fadeLeftIn 0.5s ease 0.35s forwards;
+}
+
+.caption-body.fadeleft.animate-in {
+  animation: fadeLeftIn 0.5s ease 0.7s forwards;
+}
+
+@keyframes fadeLeftIn {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade Right Animation */
+.caption-title.faderight.animate-in {
+  animation: fadeRightIn 0.5s ease 0.35s forwards;
+}
+
+.caption-body.faderight.animate-in {
+  animation: fadeRightIn 0.5s ease 0.7s forwards;
+}
+
+@keyframes fadeRightIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade Animation */
+.caption-title.fade.animate-in {
+  animation: fadeIn 0.5s ease 0.35s forwards;
+}
+
+.caption-body.fade.animate-in {
+  animation: fadeIn 0.5s ease 0.7s forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
