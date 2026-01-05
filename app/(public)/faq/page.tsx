@@ -1,12 +1,9 @@
-'use client'
-
 import { FAQ, getFAQs } from '@/lib/api/faqs'
-import { useEffect, useState } from 'react'
 
-// export const metadata = {
-//   title: 'FAQ - Cabin Rentals of Georgia',
-//   description: 'Frequently asked questions about our cabin rentals',
-// }
+export const metadata = {
+  title: 'FAQ - Cabin Rentals of Georgia',
+  description: 'Frequently asked questions about our cabin rentals',
+}
 
 async function fetchFAQs(): Promise<FAQ[]> {
   try {
@@ -22,21 +19,8 @@ async function fetchFAQs(): Promise<FAQ[]> {
   }
 }
 
-export default  function FAQPage() {
-  // const faqs = await fetchFAQs()
-  const [faqs, setFAQs] = useState<FAQ[]>([])
-
-  useEffect(() => {
-    const fetchFAQs = async () => {
-      const data = await getFAQs({
-        page: 1,
-        page_size: 100,
-        status: 'published',
-      })
-      setFAQs(data.faqs || [])
-    }
-    fetchFAQs()
-  }, [])
+export default async function FAQPage() {
+  const faqs = await fetchFAQs()
 
   return (
     <div className="container mx-auto px-4 py-6">

@@ -41,17 +41,17 @@ const featuredCabins = [
 ]
 
 const amenityIcons: Record<string, string> = {
-  internet: '/images/icon_internet_0.png',
-  'hot-tub': '/images/icon_hot_tub_0.png',
-  coffee: '/images/icon_keurig2.png',
-  'gas-grill': '/images/icon_gas_grill.png',
-  'outdoor-fireplace': '/images/icon_outdoor_fireplace_0.png',
-  'indoor-fireplace': '/images/icon_indoor_fireplace_0.png',
-  'no-smoking': '/images/icon_no_smoking_0.png',
-  pets: '/images/icon_pets.png',
-  'game-room': '/images/icon_video_games_0.png',
-  billiards: '/images/icon_billiards_0.png',
-  motorcycle: '/images/motorcycle_icon_4.25KB_matched.png',
+  internet: '/images/icons/icon_internet_0.png',
+  'hot-tub': '/images/icons/icon_hot_tub_0.png',
+  coffee: '/images/icons/icon_keurig2.png',
+  'gas-grill': '/images/icons/icon_gas_grill.png',
+  'outdoor-fireplace': '/images/icons/icon_outdoor_fireplace_0.png',
+  'indoor-fireplace': '/images/icons/icon_indoor_fireplace_0.png',
+  'no-smoking': '/images/icons/icon_no_smoking_0.png',
+  pets: '/images/icons/icon_pets.png',
+  'game-room': '/images/icons/icon_video_games_0.png',
+  billiards: '/images/icons/icon_billiards_0.png',
+  motorcycle: '/images/icons/motorcycle_icon_4.25KB_matched.png',
 }
 
 export default function FeaturedCabins() {

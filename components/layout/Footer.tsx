@@ -23,31 +23,31 @@ export default function Footer() {
     {
       name: 'Facebook',
       href: 'https://www.facebook.com/CabinRentalsofGeorgia',
-      iconSrc: '/images/icon_fb.png',
+      iconSrc: '/images/social_icons/icon_fb.png',
       alt: 'Facebook',
     },
     {
       name: 'Instagram',
       href: 'https://www.instagram.com/crgluxury/',
-      iconSrc: '/images/icon_instagram.png',
+      iconSrc: '/images/social_icons/icon_instagram.png',
       alt: 'Instagram',
     },
     {
       name: 'Twitter',
       href: 'https://x.com/CRGLuxury',
-      iconSrc: '/images/icon_twitter.png',
+      iconSrc: '/images/social_icons/icon_twitter.png',
       alt: 'Twitter',
     },
     {
       name: 'Pinterest',
       href: 'https://pinterest.com/crgluxury/',
-      iconSrc: '/images/icon_pinterest.png',
+      iconSrc: '/images/social_icons/icon_pinterest.png',
       alt: 'Pinterest',
     },
     {
       name: 'YouTube',
       href: 'https://www.youtube.com/channel/UCi4BOs7O9xcsAUIMpG0OKlg',
-      iconSrc: '/images/icon_youtube.png',
+      iconSrc: '/images/social_icons/icon_youtube.png',
       alt: 'YouTube',
     },
   ]
@@ -58,7 +58,7 @@ export default function Footer() {
         {/* Social Links */}
         <div className="flex px-[2%] pt-[40px]">
           <div className="flex flex-col  bg-[url('/images/bg_footer_social.png')] bg-center bg-top bg-no-repeat h-[325px] min-w-[243px] pl-[25px] pt-[25px]">
-            <h2 className="font-normal italic text-[170%] leading-[100%] text-white mb-[15px] ml-[5px]">Connect with Us</h2>
+            <h2 className="font-normal italic text-[170%] leading-[100%] text-white mb-[20px] ml-[5px] mt-0">Connect with Us</h2>
             <div>
               <ul className="list-none p-0 m-0 space-y-2 flex flex-col gap-1 ml-[20px] italic">
                 {socialMediaLinks.map((social, index) => (
@@ -139,7 +139,7 @@ export default function Footer() {
             <div className='flex flex-col px-[15px]'>
               <div className="text-white text-[90%]" style={{ textShadow: '0px 0px 13px #000' }}>
                 <Image
-                  src="/images/logo_115_2.png"
+                  src="/images/logo.png"
                   alt="Cabin Rentals of Georgia"
                   width={115}
                   height={115}

@@ -5,21 +5,21 @@ import Image from 'next/image'
 
 const slides = [
   {
-    image: '/images/slide_rustic.jpg',
+    image: '/images/slider/1.jpeg',
     title: 'The Cabins',
     body: 'Experience Blue Ridge in a place where luxury is a way of life',
     titleClass: 'fadeleft',
     bodyClass: 'faderight',
   },
   {
-    image: '/images/RR.jpeg',
+    image: '/images/slider/2.jpeg',
     title: 'The Experience',
     body: 'A place to look for the unexpected and find more than you imagined',
     titleClass: 'fade',
     bodyClass: 'fade',
   },
   {
-    image: '/images/IMG_9547 copy.jpg',
+    image: '/images/slider/3.jpeg',
     title: 'The Memories',
     body: 'A place where friends and family reconnect...where ambiance creates lasting memories',
     titleClass: 'fade',

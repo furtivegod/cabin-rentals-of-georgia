@@ -224,7 +224,7 @@ export default function Header() {
         <div id="logo" className="relative m-auto z-[100] w-[276px] mt-2.5 top-0">
           <Link href="/" className="h-auto absolute top-0">
             <Image
-              src="/images/logo_115_2.png"
+              src="/images/logo.png"
               alt="Cabin Rentals of Georgia"
               width={276}
               height={115}
