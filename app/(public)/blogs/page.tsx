@@ -1,4 +1,4 @@
-import { Blog, BlogListResponse } from '@/lib/api/blogs'
+import { Blog, BlogListResponse, getBlogs } from '@/lib/api/blogs'
 import Link from 'next/link'
 
 export const metadata = {
@@ -58,24 +58,12 @@ function stripHtmlTags(html: string): string {
 }
 
 async function fetchBlogs(page: number = 1): Promise<BlogListResponse> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-  
   try {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      page_size: '12',
+    const data = await getBlogs({
+      page,
+      page_size: 12,
       status: 'published',
     })
-    
-    const response = await fetch(`${API_URL}/api/v1/blogs?${params.toString()}`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch blogs: ${response.statusText}`)
-    }
-    
-    const data = await response.json()
     return data
   } catch (error) {
     console.error('Error fetching blogs:', error)

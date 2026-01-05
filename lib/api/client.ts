@@ -3,7 +3,7 @@
  */
 import axios, { AxiosInstance, AxiosError } from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 class ApiClient {
   private client: AxiosInstance
@@ -20,10 +20,12 @@ class ApiClient {
     // Request interceptor
     this.client.interceptors.request.use(
       (config) => {
-        // Add auth token if available
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`
+        // Add auth token if available (only in browser)
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('token')
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+          }
         }
         return config
       },
@@ -36,10 +38,10 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
-        // Handle errors globally
-        if (error.response?.status === 401) {
-          // Handle unauthorized
-          if (typeof window !== 'undefined') {
+        // Handle errors globally (only in browser)
+        if (typeof window !== 'undefined') {
+          if (error.response?.status === 401) {
+            // Handle unauthorized
             localStorage.removeItem('token')
             window.location.href = '/login'
           }

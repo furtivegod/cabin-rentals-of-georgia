@@ -1,29 +1,20 @@
-import { FAQ } from '@/lib/api/faqs'
+'use client'
 
-export const metadata = {
-  title: 'FAQ - Cabin Rentals of Georgia',
-  description: 'Frequently asked questions about our cabin rentals',
-}
+import { FAQ, getFAQs } from '@/lib/api/faqs'
+import { useEffect, useState } from 'react'
+
+// export const metadata = {
+//   title: 'FAQ - Cabin Rentals of Georgia',
+//   description: 'Frequently asked questions about our cabin rentals',
+// }
 
 async function fetchFAQs(): Promise<FAQ[]> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-  console.log(API_URL)
   try {
-    const params = new URLSearchParams({
-      page: '1',
-      page_size: '100',
+    const data = await getFAQs({
+      page: 1,
+      page_size: 100,
       status: 'published',
     })
-    
-    const response = await fetch(`${API_URL}/api/v1/faqs?${params.toString()}`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch FAQs: ${response.statusText}`)
-    }
-    
-    const data = await response.json()
     return data.faqs || []
   } catch (error) {
     console.error('Error fetching FAQs:', error)
@@ -31,8 +22,21 @@ async function fetchFAQs(): Promise<FAQ[]> {
   }
 }
 
-export default async function FAQPage() {
-  const faqs = await fetchFAQs()
+export default  function FAQPage() {
+  // const faqs = await fetchFAQs()
+  const [faqs, setFAQs] = useState<FAQ[]>([])
+
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      const data = await getFAQs({
+        page: 1,
+        page_size: 100,
+        status: 'published',
+      })
+      setFAQs(data.faqs || [])
+    }
+    fetchFAQs()
+  }, [])
 
   return (
     <div className="container mx-auto px-4 py-6">

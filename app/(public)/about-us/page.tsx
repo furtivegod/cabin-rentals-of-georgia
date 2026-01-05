@@ -1,4 +1,4 @@
-import { AboutUs } from '@/lib/api/about-us'
+import { AboutUs, getAboutUs } from '@/lib/api/about-us'
 
 export const metadata = {
   title: 'About Us - Cabin Rentals of Georgia',
@@ -25,18 +25,8 @@ function cleanHtmlContent(html: string): string {
 }
 
 async function fetchAboutUs(): Promise<AboutUs | null> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-  
   try {
-    const response = await fetch(`${API_URL}/api/v1/about-us`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch About Us: ${response.statusText}`)
-    }
-    
-    const data = await response.json()
+    const data = await getAboutUs()
     return data
   } catch (error) {
     console.error('Error fetching About Us:', error)

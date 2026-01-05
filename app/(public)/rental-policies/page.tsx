@@ -1,4 +1,4 @@
-import { Policy } from '@/lib/api/policies'
+import { Policy, getRentalPolicies } from '@/lib/api/policies'
 
 export const metadata = {
   title: 'Rental Policies - Cabin Rentals of Georgia',
@@ -25,18 +25,8 @@ function cleanHtmlContent(html: string): string {
 }
 
 async function fetchRentalPolicies(): Promise<Policy | null> {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-  
   try {
-    const response = await fetch(`${API_URL}/api/v1/policies`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Rental Policies: ${response.statusText}`)
-    }
-    
-    const data = await response.json()
+    const data = await getRentalPolicies()
     return data
   } catch (error) {
     console.error('Error fetching Rental Policies:', error)
