@@ -48,17 +48,17 @@ export default function PageLoading({
     : 'container mx-auto px-4 py-12'
   
   const contentClasses = variant === 'cabin'
-    ? 'max-w-none'
-    : 'max-w-4xl mx-auto'
+    ? 'max-w-none relative'
+    : 'max-w-4xl mx-auto relative'
 
   return (
     <div className={containerClasses}>
       <div className={contentClasses}>
         {/* Skeleton for title - matches h1 style */}
         <div className="mb-8">
-          <div className="h-12 bg-gradient-to-r from-[#e8d5c4] via-[#f0e6d9] to-[#e8d5c4] rounded w-3/4 mb-4 animate-pulse"></div>
+          <div className="h-8 bg-gradient-to-r from-[#e8d5c4] via-[#f0e6d9] to-[#e8d5c4] rounded w-1/2 mb-4 animate-pulse"></div>
           <div 
-            className="h-10 bg-gradient-to-r from-[#f0e6d9] via-[#e8d5c4] to-[#f0e6d9] rounded w-1/2 animate-pulse" 
+            className="h-6 bg-gradient-to-r from-[#f0e6d9] via-[#e8d5c4] to-[#f0e6d9] rounded w-3/4 animate-pulse" 
             style={{ animationDelay: '0.2s' }}
           ></div>
         </div>
@@ -66,7 +66,7 @@ export default function PageLoading({
         {/* Skeleton for description content - prose style */}
         <div className="space-y-3 mb-8">
           {skeletonLineDelays.map((delay, index) => {
-            const widths = ['w-full', 'w-full', 'w-5/6', 'w-4/5', 'w-full', 'w-3/4']
+            const widths = ['w-full', 'w-full', 'w-5/6', 'w-4/5', 'w-4/3', 'w-4/7', 'w-full']
             const widthClass = widths[index % widths.length] || 'w-full'
             
             return (
@@ -81,13 +81,11 @@ export default function PageLoading({
 
         {/* Loading spinner with site colors - centered */}
         {showSpinner && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="relative mb-4">
-              {/* Outer ring with site brown color */}
+          <div className="flex flex-col items-center justify-center py-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            {/* <div className="relative mb-4">
               <div className="w-16 h-16 border-4 border-[#e8d5c4] border-t-[#7c2c00] rounded-full animate-spin"></div>
-              {/* Inner accent dot */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-[#7c2c00] rounded-full"></div>
-            </div>
+            </div> */}
             
             {/* Loading text with site typography */}
             <p className="text-[#533e27] text-lg italic font-serif">
