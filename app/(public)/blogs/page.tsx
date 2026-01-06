@@ -1,60 +1,12 @@
+import { Suspense } from 'react'
 import { Blog, BlogListResponse, getBlogs } from '@/lib/api/blogs'
 import Link from 'next/link'
+import PageLoading from '@/components/ui/PageLoading'
+import { stripHtmlTags } from '@/lib/utils/html-utils'
 
 export const metadata = {
   title: 'Blog - Cabin Rentals of Georgia',
   description: 'Read our latest blog posts about North Georgia, cabin living, and travel tips',
-}
-
-function stripHtmlTags(html: string): string {
-  // Create a temporary DOM element to decode HTML entities
-  // This works in both browser and Node.js environments
-  let text = html.replace(/<[^>]*>/g, '') // Remove HTML tags first
-  
-  // Decode common HTML entities
-  const entityMap: { [key: string]: string } = {
-    '&nbsp;': ' ',
-    '&amp;': '&',
-    '&lt;': '<',
-    '&gt;': '>',
-    '&quot;': '"',
-    '&#39;': "'",
-    '&apos;': "'",
-    '&rsquo;': "'",
-    '&lsquo;': "'",
-    '&rdquo;': '"',
-    '&ldquo;': '"',
-    '&mdash;': '—',
-    '&ndash;': '–',
-    '&hellip;': '...',
-    '&copy;': '©',
-    '&reg;': '®',
-    '&trade;': '™',
-    '&euro;': '€',
-    '&pound;': '£',
-    '&yen;': '¥',
-    '&cent;': '¢',
-  }
-  
-  // Replace named entities
-  for (const [entity, char] of Object.entries(entityMap)) {
-    text = text.replace(new RegExp(entity, 'gi'), char)
-  }
-  
-  // Replace numeric entities (&#39;, &#8217;, etc.)
-  text = text.replace(/&#(\d+);/g, (match, dec) => {
-    return String.fromCharCode(parseInt(dec, 10))
-  })
-  
-  // Replace hex entities (&#x27;, &#x2019;, etc.)
-  text = text.replace(/&#x([0-9a-f]+);/gi, (match, hex) => {
-    return String.fromCharCode(parseInt(hex, 16))
-  })
-  
-  // Normalize whitespace
-  text = text.replace(/\s+/g, ' ').trim()
-  
-  return text
 }
 
 async function fetchBlogs(page: number = 1): Promise<BlogListResponse> {
@@ -202,7 +154,7 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
   )
 }
 
-export default async function BlogPage({
+async function BlogContent({
   searchParams,
 }: {
   searchParams: { page?: string }
@@ -255,6 +207,18 @@ export default async function BlogPage({
         <Pagination currentPage={currentPage} totalPages={total_pages} />
       </div>
     </div>
+  )
+}
+
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: { page?: string }
+}) {
+  return (
+    <Suspense fallback={<PageLoading message="Loading blog posts..." variant="container" />}>
+      <BlogContent searchParams={searchParams} />
+    </Suspense>
   )
 }
 

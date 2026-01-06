@@ -1,27 +1,11 @@
+import { Suspense } from 'react'
 import { Policy, getRentalPolicies } from '@/lib/api/policies'
+import { cleanHtmlContent } from '@/lib/utils/html-utils'
+import PageLoading from '@/components/ui/PageLoading'
 
 export const metadata = {
   title: 'Rental Policies - Cabin Rentals of Georgia',
   description: 'Review our rental policies, terms and conditions',
-}
-
-// Utility function to clean HTML content
-function cleanHtmlContent(html: string): string {
-  if (!html) return ''
-  
-  // Remove literal \r\n escape sequences
-  let cleaned = html.replace(/\\r\\n/g, '\n')
-  // Remove literal \n escape sequences
-  cleaned = cleaned.replace(/\\n/g, '\n')
-  // Remove literal \r escape sequences
-  cleaned = cleaned.replace(/\\r/g, '')
-  // Remove literal \t escape sequences
-  cleaned = cleaned.replace(/\\t/g, ' ')
-  // Remove literal backslashes before quotes
-  cleaned = cleaned.replace(/\\"/g, '"')
-  cleaned = cleaned.replace(/\\'/g, "'")
-  
-  return cleaned
 }
 
 async function fetchRentalPolicies(): Promise<Policy | null> {
@@ -34,7 +18,7 @@ async function fetchRentalPolicies(): Promise<Policy | null> {
   }
 }
 
-export default async function RentalPoliciesPage() {
+async function RentalPoliciesContent() {
   const policy = await fetchRentalPolicies()
 
   return (
@@ -62,6 +46,14 @@ export default async function RentalPoliciesPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default async function RentalPoliciesPage() {
+  return (
+    <Suspense fallback={<PageLoading message="Loading rental policies..." variant="container" />}>
+      <RentalPoliciesContent />
+    </Suspense>
   )
 }
 

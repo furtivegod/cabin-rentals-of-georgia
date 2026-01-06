@@ -1,0 +1,102 @@
+import { Metadata } from 'next'
+import { Suspense } from 'react'
+import CabinListing from '@/components/cabin/CabinListing'
+import { getTermByCategorySlug } from '@/lib/api/taxonomy'
+import PageLoading from '@/components/ui/PageLoading'
+
+interface PageProps {
+  params: {
+    category: string
+    slug: string
+  }
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { category, slug } = params
+
+  try {
+    const term = await getTermByCategorySlug(category, slug)
+    const title = term.page_title || term.name
+
+    return {
+      title: `${title} | Cabin Rentals of Georgia`,
+      description: term.description
+        ? term.description.replace(/<[^>]*>/g, '').substring(0, 160)
+        : `Browse our selection of ${term.name} cabins in Blue Ridge, GA.`,
+    }
+  } catch (error) {
+    return {
+      title: 'Cabin Rentals | Cabin Rentals of Georgia',
+      description: 'Browse our selection of cabin rentals in Blue Ridge, GA.',
+    }
+  }
+}
+
+async function CabinCategoryContent({ category, slug }: { category: string; slug: string }) {
+  try {
+    // Fetch taxonomy term data from Supabase
+    const term = await getTermByCategorySlug(category, slug)
+
+    // Use page title if available, otherwise use term name
+    const title = term.page_title || term.name
+
+    // Determine filter parameters based on category and vid
+    let categoryFilter: string | undefined
+    let amenityFilter: string | undefined
+    let bedroomsFilter: number | undefined
+
+    if (category === 'amenities') {
+      // For amenities, use the term name as amenity filter
+      amenityFilter = term.name.toLowerCase().replace(/\s+/g, '-')
+    } else if (category !== 'all') {
+      // For bedroom categories, extract number
+      const bedroomMatch = category.match(/(\d+)/)
+      if (bedroomMatch) {
+        bedroomsFilter = parseInt(bedroomMatch[1])
+      }
+    } else {
+      // For property types (category='all'), use term name as category
+      categoryFilter = term.name.toLowerCase().replace(/\s+/g, '-')
+    }
+
+    return (
+      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+        <h1 className="text-4xl mb-0">{title}</h1>
+        <div
+          className="prose prose-lg mx-auto mb-0 block"
+          dangerouslySetInnerHTML={{ __html: term.description || 'No description available' }}
+        />
+      </div>
+    )
+  } catch (error: any) {
+    // If term not found or error, show fallback content
+    console.error('Error fetching taxonomy term:', error)
+    return (
+      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+        <div className="mb-8">
+          <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
+            <em>Cabin Rentals</em>
+          </h1>
+          <div className="text-center py-10">
+            <p className="text-[#533e27] text-lg">
+              {error?.response?.status === 404
+                ? 'Page not found. Please check the URL and try again.'
+                : 'Unable to load page content. Please try again later.'}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+export default async function CabinCategoryPage({ params }: PageProps) {
+  const { category, slug } = params
+
+  return (
+    <Suspense fallback={<PageLoading message="Loading cabin information..." variant="cabin" />}>
+      <CabinCategoryContent category={category} slug={slug} />
+    </Suspense>
+  )
+}
+

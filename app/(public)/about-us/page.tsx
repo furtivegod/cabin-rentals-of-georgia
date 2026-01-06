@@ -1,27 +1,11 @@
+import { Suspense } from 'react'
 import { AboutUs, getAboutUs } from '@/lib/api/about-us'
+import { cleanHtmlContent } from '@/lib/utils/html-utils'
+import PageLoading from '@/components/ui/PageLoading'
 
 export const metadata = {
   title: 'About Us - Cabin Rentals of Georgia',
   description: 'Learn about Cabin Rentals of Georgia and our commitment to providing exceptional vacation experiences',
-}
-
-// Utility function to clean HTML content
-function cleanHtmlContent(html: string): string {
-  if (!html) return ''
-  
-  // Remove literal \r\n escape sequences
-  let cleaned = html.replace(/\\r\\n/g, '\n')
-  // Remove literal \n escape sequences
-  cleaned = cleaned.replace(/\\n/g, '\n')
-  // Remove literal \r escape sequences
-  cleaned = cleaned.replace(/\\r/g, '')
-  // Remove literal \t escape sequences
-  cleaned = cleaned.replace(/\\t/g, ' ')
-  // Remove literal backslashes before quotes
-  cleaned = cleaned.replace(/\\"/g, '"')
-  cleaned = cleaned.replace(/\\'/g, "'")
-  
-  return cleaned
 }
 
 async function fetchAboutUs(): Promise<AboutUs | null> {
@@ -34,7 +18,7 @@ async function fetchAboutUs(): Promise<AboutUs | null> {
   }
 }
 
-export default async function AboutPage() {
+async function AboutUsContent() {
   const aboutUs = await fetchAboutUs()
 
   return (
@@ -117,6 +101,14 @@ export default async function AboutPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default async function AboutPage() {
+  return (
+    <Suspense fallback={<PageLoading message="Loading about us information..." variant="container" />}>
+      <AboutUsContent />
+    </Suspense>
   )
 }
 

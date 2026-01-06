@@ -1,37 +1,65 @@
-export const metadata = {
-  title: 'Blue Ridge Cabins - Cabin Rentals of Georgia',
-  description: 'Browse our collection of luxury Blue Ridge cabin rentals',
-}
+import { Metadata } from 'next'
+import { Suspense } from 'react'
+import { getTermForAllCabins } from '@/lib/api/taxonomy'
+import PageLoading from '@/components/ui/PageLoading'
 
-export default function BlueRidgeCabinsPage() {
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Blue Ridge Cabins</h1>
-        <p className="text-lg text-gray-700 mb-8">
-          Explore our collection of luxury cabin rentals in Blue Ridge, Georgia.
-        </p>
-        
-        {/* Cabin grid - placeholder */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
-              <div className="h-48 bg-gray-200"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">Cabin Name {i}</h3>
-                <p className="text-gray-600 mb-4">Beautiful cabin description...</p>
-                <a
-                  href={`/cabin/blue-ridge/cabin-${i}`}
-                  className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-          ))}
+const slug = 'blue-ridge-cabins'
+
+async function BlueRidgeCabinsContent() {
+  try {
+    const term = await getTermForAllCabins(slug)
+    // Use page title if available, otherwise use term name
+    const title = term.page_title || term.name
+
+    return (
+      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+        <h1 className="text-4xl mb-8">{title}</h1>
+        <div
+          className="prose prose-lg mx-auto mb-8 block"
+          dangerouslySetInnerHTML={{ __html: term.description || 'No description available' }}
+        />
+      </div>
+    )
+  } catch (error: any) {
+    // If term not found or error, show fallback content
+    console.error('Error fetching taxonomy term:', error)
+    return (
+      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+        <div className="mb-8">
+          <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
+            <em>Cabin Rentals</em>
+          </h1>
+          <div className="text-center py-10">
+            <p className="text-[#533e27] text-lg">
+              {error?.response?.status === 404
+                ? 'Page not found. Please check the URL and try again.'
+                : 'Unable to load page content. Please try again later.'}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    )
+  }
+}
+
+export default async function BlueRidgeCabinsPage() {
+  return (
+    <Suspense fallback={<PageLoading message="Loading cabin listings..." variant="cabin" />}>
+      <BlueRidgeCabinsContent />
+    </Suspense>
   )
 }
 
+export async function generateMetadata(): Promise<Metadata> {
+  const term = await getTermForAllCabins(slug)
+  if (!term) {
+    return {
+      title: 'Blue Ridge Cabins | Cabin Rentals of Georgia',
+      description: 'Browse our complete collection of luxury cabin rentals in Blue Ridge, GA. From cozy 2-bedrooms to spacious 5-bedroom lodges, find your perfect mountain getaway.',
+    } as Metadata
+  }
+  return {
+    title: `${term.name} | Cabin Rentals of Georgia`,
+    description: term.description,
+  } as Metadata
+}

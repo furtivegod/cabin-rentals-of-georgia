@@ -22,7 +22,6 @@ export default function PropertySearch() {
   }, [pathname])
 
   const isSearchActive = activeTab === 'search'
-  const isPropertyActive = activeTab === 'property'
 
   const handlePropertyTabClick = () => {
     setActiveTab('property')

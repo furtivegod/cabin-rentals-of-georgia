@@ -1,4 +1,6 @@
+import { Suspense } from 'react'
 import { FAQ, getFAQs } from '@/lib/api/faqs'
+import PageLoading from '@/components/ui/PageLoading'
 
 export const metadata = {
   title: 'FAQ - Cabin Rentals of Georgia',
@@ -19,7 +21,7 @@ async function fetchFAQs(): Promise<FAQ[]> {
   }
 }
 
-export default async function FAQPage() {
+async function FAQContent() {
   const faqs = await fetchFAQs()
 
   return (
@@ -32,7 +34,7 @@ export default async function FAQPage() {
         ) : (
           <div className="space-y-6">
             {faqs.map((faq) => (
-              <>
+              <div key={faq.id}>
                 <h1 className="text-[210%]">{faq.question}</h1>
                 <div 
                   className="prose prose-sm max-w-none block"
@@ -45,11 +47,19 @@ export default async function FAQPage() {
                     </span>
                   </div>
                 )}
-              </>
+              </div>
             ))}
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+export default async function FAQPage() {
+  return (
+    <Suspense fallback={<PageLoading message="Loading frequently asked questions..." variant="container" />}>
+      <FAQContent />
+    </Suspense>
   )
 }
