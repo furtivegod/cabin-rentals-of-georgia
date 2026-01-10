@@ -154,6 +154,24 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
   )
 }
 
+function formatBlogUrl(blog: Blog): string {
+  // Use published_at if available, otherwise fall back to created_at
+  const dateString = blog.published_at || blog.created_at
+  if (dateString) {
+    const date = new Date(dateString)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `/blog/${year}/${month}/${day}/${blog.slug}`
+  }
+  // Fallback: use current date if no date available (shouldn't happen in practice)
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `/blog/${year}/${month}/${day}/${blog.slug}`
+}
+
 async function BlogContent({
   searchParams,
 }: {
@@ -177,7 +195,7 @@ async function BlogContent({
             {blogs.map((blog) => (
               <article key={blog.id}>
                 <h3 className="my-0">
-                  <Link href={`/blogs/${blog.slug}`} className="text-[20px] font-normal">
+                  <Link href={formatBlogUrl(blog)} className="text-[20px] font-normal">
                     {blog.title}
                   </Link>
                 </h3>

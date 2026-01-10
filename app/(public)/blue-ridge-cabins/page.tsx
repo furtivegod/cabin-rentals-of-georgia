@@ -1,13 +1,13 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
-import { getTermForAllCabins } from '@/lib/api/taxonomy'
+import { getTermBySlug } from '@/lib/api/taxonomy'
 import PageLoading from '@/components/ui/PageLoading'
 
 const slug = 'blue-ridge-cabins'
 
 async function BlueRidgeCabinsContent() {
   try {
-    const term = await getTermForAllCabins(slug)
+    const term = await getTermBySlug(slug)
     // Use page title if available, otherwise use term name
     const title = term.page_title || term.name
 
@@ -51,7 +51,7 @@ export default async function BlueRidgeCabinsPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const term = await getTermForAllCabins(slug)
+  const term = await getTermBySlug(slug)
   if (!term) {
     return {
       title: 'Blue Ridge Cabins | Cabin Rentals of Georgia',

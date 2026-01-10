@@ -30,11 +30,11 @@ export async function getTermByCategorySlug(
   return response.data
 }
 
-export async function getTermForAllCabins(
+export async function getTermBySlug(
   slug: string
 ): Promise<TaxonomyTerm> {
   const response = await apiClient.get<TaxonomyTerm>(
-    `/api/v1/taxonomy/term/all-cabins`,
+    `/api/v1/taxonomy/term/by-slug`,
     {
       params: { slug },
     }
