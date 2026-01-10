@@ -8,10 +8,6 @@ import Link from 'next/link'
 
 const slug = 'blue-ridge-memories'
 
-// Force dynamic rendering to avoid build-time API calls
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-
 async function fetchTestimonials(): Promise<Testimonial[]> {
   try {
     const data = await getTestimonials({
@@ -20,12 +16,7 @@ async function fetchTestimonials(): Promise<Testimonial[]> {
       status: 'published',
     })
     return data.testimonials
-  } catch (error: any) {
-    // Handle connection errors gracefully (e.g., during build or when backend is down)
-    if (error?.code === 'ECONNREFUSED' || error?.code === 'EACCES' || error?.code === 'ETIMEDOUT') {
-      console.warn('Backend API not available, returning empty testimonials')
-      return []
-    }
+  } catch (error) {
     console.error('Error fetching testimonials:', error)
     return []
   }
@@ -34,34 +25,9 @@ async function fetchTestimonials(): Promise<Testimonial[]> {
 async function BlueRidgeMemoriesContent() {
   try {
     const [term, testimonials] = await Promise.all([
-      getTermBySlug(slug).catch((error: any) => {
-        // Handle connection errors gracefully
-        if (error?.code === 'ECONNREFUSED' || error?.code === 'EACCES' || error?.code === 'ETIMEDOUT') {
-          console.warn('Backend API not available for taxonomy term')
-          return null
-        }
-        throw error
-      }),
+      getTermBySlug(slug),
       fetchTestimonials(),
     ])
-    
-    // Handle case where term is null (API unavailable)
-    if (!term) {
-      return (
-        <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
-          <div className="mb-8">
-            <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
-              <em>Blue Ridge Memories</em>
-            </h1>
-            <div className="text-center py-10">
-              <p className="text-[#533e27] text-lg">
-                Content is being loaded. Please refresh the page.
-              </p>
-            </div>
-          </div>
-        </div>
-      )
-    }
     
     // Use page title if available, otherwise use term name
     const title = term.page_title || term.name
@@ -87,7 +53,6 @@ async function BlueRidgeMemoriesContent() {
                   <h3 className="text-lg font-bold mb-2 text-[#7c2c00]">
                     {testimonial.title}
                   </h3>
-                  
                   {/* Cabin Name / Source */}
                   {testimonial.cabin_name && (
                     <p className="text-sm text-gray-600 mb-2">
@@ -171,20 +136,15 @@ export default async function BlueRidgeMemoriesPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const term = await getTermBySlug(slug)
-    if (!term) {
-      throw new Error('Term not found')
-    }
-    return {
-      title: `${term.name} | Blue Ridge Memories`,
-      description: term.description || 'Browse our complete collection of luxury cabin rentals in Blue Ridge, GA.',
-    } as Metadata
-  } catch (error: any) {
-    // Fallback metadata if API is unavailable
+  const term = await getTermBySlug(slug)
+  if (!term) {
     return {
       title: 'Blue Ridge Memories | Blue Ridge Memories',
       description: 'Browse our complete collection of luxury cabin rentals in Blue Ridge, GA. From cozy 2-bedrooms to spacious 5-bedroom lodges, find your perfect mountain getaway.',
     } as Metadata
   }
+  return {
+    title: `${term.name} | Blue Ridge Memories`,
+    description: term.description,
+  } as Metadata
 }

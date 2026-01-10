@@ -38,15 +38,6 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
-        // Handle connection errors gracefully (e.g., during build or when backend is down)
-        if (error.code === 'ECONNREFUSED' || error.code === 'EACCES' || error.code === 'ETIMEDOUT') {
-          // Log warning but don't crash - let the calling code handle it
-          if (typeof window === 'undefined') {
-            // Server-side (during build/SSR)
-            console.warn(`API connection error (${error.code}): Backend may not be running`)
-          }
-        }
-        
         // Handle errors globally (only in browser)
         if (typeof window !== 'undefined') {
           if (error.response?.status === 401) {
