@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+    <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
       <div className="mb-8">
         <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
           <em>Luxury Cabins in Blue Ridge, GA</em>

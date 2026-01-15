@@ -12,11 +12,11 @@ async function BlueRidgeCabinsContent() {
     const title = term.page_title || term.name
 
     return (
-      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <h1 className="text-4xl mb-8">{title}</h1>
         <div
           className="prose prose-lg mx-auto mb-8 block"
-          dangerouslySetInnerHTML={{ __html: term.description || 'No description available' }}
+          dangerouslySetInnerHTML={{ __html: term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available' }}
         />
       </div>
     )
@@ -24,7 +24,7 @@ async function BlueRidgeCabinsContent() {
     // If term not found or error, show fallback content
     console.error('Error fetching taxonomy term:', error)
     return (
-      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <div className="mb-8">
           <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
             <em>Cabin Rentals</em>

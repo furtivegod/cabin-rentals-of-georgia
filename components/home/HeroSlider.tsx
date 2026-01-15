@@ -46,7 +46,7 @@ export default function HeroSlider() {
   }, [])
 
   return (
-    <div className="w-full h-[466px] bg-[url('/images/bg_top3.jpg')] bg-[50%_100%] bg-repeat-x shadow-[0px_0px_40px_-5px_#000] relative z-[2] overflow-hidden -mt-2.5">
+    <div className="w-full h-[466px] max-[1010px]:h-[380px] max-[767px]:h-[220px] bg-[url('/images/bg_top3.jpg')] bg-[50%_100%] bg-repeat-x shadow-[0px_0px_40px_-5px_#000] relative z-[2] overflow-hidden -mt-[4px]">
       <div className="relative h-[466px] mx-auto z-[3] text-center">
         <div id="banner-wrapper" className="relative w-full h-full">
           <div id="banner" className="relative w-full h-full">

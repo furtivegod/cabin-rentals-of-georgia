@@ -28,76 +28,90 @@ async function BlueRidgeMemoriesContent() {
       getTermBySlug(slug),
       fetchTestimonials(),
     ])
-    
+
     // Use page title if available, otherwise use term name
     const title = term.page_title || term.name
 
     return (
-      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
-        <h1 className="text-4xl mb-8">{title}</h1>
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+        <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
+          <em>{title}</em>
+        </h1>
         <div
           className="prose prose-lg mx-auto mb-8 block"
-          dangerouslySetInnerHTML={{ __html: term.description || 'No description available' }}
+          dangerouslySetInnerHTML={{ __html: term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available' }}
         />
         <div className="flex flex-col">
-          <h2 className="text-2xl mb-4">Our Memories</h2>
           {testimonials.length === 0 ? (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <p className="text-gray-700">No testimonials available at the moment. Please check back later.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-4">
               {testimonials.map((testimonial) => (
-                <div key={testimonial.id} className="bg-white p-4 rounded-lg shadow-md">
-                  {/* Testimonial Title */}
-                  <h3 className="text-lg font-bold mb-2 text-[#7c2c00]">
-                    {testimonial.title}
-                  </h3>
-                  {/* Cabin Name / Source */}
-                  {testimonial.cabin_name && (
-                    <p className="text-sm text-gray-600 mb-2">
-                      This review is from:{' '}
-                      <Link 
-                        href={`/${testimonial.cabin_slug}`}
-                        className="text-[#7c2c00] underline hover:text-[#533e27]"
-                      >
-                        {testimonial.cabin_name}
-                      </Link>
-                    </p>
-                  )}
-                  
-                  {/* Customer Image */}
-                  {testimonial.customer_image_url && (
-                    <div className="mb-3">
-                      <img
-                        src={testimonial.customer_image_url}
-                        alt={testimonial.customer_image_alt || testimonial.title}
-                        title={testimonial.customer_image_title || undefined}
-                        className="w-full h-auto rounded"
-                        width={testimonial.customer_image_width || undefined}
-                        height={testimonial.customer_image_height || undefined}
-                      />
+                <div key={testimonial.id} className="flex gap-4 mb-[25px]">
+                  {/* Customer Image - Floated Left */}
+                  {testimonial.customer_image_url ? (
+                    <div className="flex-shrink-0">
+                      <div className="customer-image shadow-[0px_0px_8px_1px_#888] p-0.5">
+                        <img
+                          src={testimonial.customer_image_url}
+                          alt={testimonial.customer_image_alt || testimonial.title || ''}
+                          title={testimonial.customer_image_title || undefined}
+                          width={48}
+                          height={48}
+                          className="block"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex-shrink-0">
+                      <div className="customer-image shadow-[0px_0px_8px_1px_#888] p-0.5">
+                        <img
+                          src="/images/testimonial_default.jpg"
+                          alt=""
+                          width={48}
+                          height={48}
+                          className="block"
+                        />
+                      </div>
                     </div>
                   )}
-                  
-                  {/* Testimonial Body */}
-                  {testimonial.body ? (
-                    <div 
-                      className="text-gray-700 italic text-sm leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: cleanHtmlContent(testimonial.body) }}
-                    />
-                  ) : testimonial.body_summary ? (
-                    <p className="text-gray-700 italic text-sm leading-relaxed">
-                      {stripHtmlTags(testimonial.body_summary)}
-                    </p>
-                  ) : null}
-                  
-                  {/* Author Name */}
-                  {testimonial.author_name && (
-                    <p className="text-xs text-gray-500 mt-2">
-                      — {testimonial.author_name}
-                    </p>
-                  )}
+
+                  {/* Content Section */}
+                  <div className="flex-1 flex flex-col block">
+                    {/* Testimonial Title */}
+                    {testimonial.title && (
+                      <span className="text-[#533e27] text-[130%] line-height-[120%] ">
+                        {testimonial.title}
+                      </span>
+                    )}
+
+                    {/* Cabin Name / Source */}
+                    {testimonial.cabin_name && (
+                      <div>
+                        <span className="">This review is from: </span>
+                        <Link
+                          href={`/${testimonial.cabin_slug}`}
+                          className="text-[#7c2c00] underline hover:text-[#b7714b]"
+                        >
+                          {testimonial.cabin_name}
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Testimonial Body */}
+                    {testimonial.body ? (
+                      <div
+                        className="text-[#533e27] italic leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: cleanHtmlContent(testimonial.body) }}
+                      />
+                    ) : testimonial.body_summary ? (
+                      <p className="text-[#533e27] italic leading-relaxed">
+                        {stripHtmlTags(testimonial.body_summary)}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
               ))}
             </div>
@@ -109,7 +123,7 @@ async function BlueRidgeMemoriesContent() {
     // If term not found or error, show fallback content
     console.error('Error fetching taxonomy term:', error)
     return (
-      <div className="w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <div className="mb-8">
           <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
             <em>Blue Ridge Memories</em>

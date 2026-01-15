@@ -31,12 +31,13 @@ export async function getTermByCategorySlug(
 }
 
 export async function getTermBySlug(
-  slug: string
+  slug: string,
+  vid?: number
 ): Promise<TaxonomyTerm> {
   const response = await apiClient.get<TaxonomyTerm>(
     `/api/v1/taxonomy/term/by-slug`,
     {
-      params: { slug },
+      params: { slug, ...(vid && { vid }) },
     }
   )
   return response.data

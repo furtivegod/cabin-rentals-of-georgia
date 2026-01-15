@@ -54,37 +54,36 @@ export default function Footer() {
 
   return (
     <div className="min-h-[380px] w-full bg-[url('/images/bg_footer2.png')] bg-[50%_0] bg-no-repeat p-0 m-0 relative -bottom-[7px]">
-      <div className="bg-[url('/images/bg_footer_logo.png')] bg-[50%_120%] bg-no-repeat w-full min-h-[370px]">
+      <div className="bg-[url('/images/bg_footer_logo.png')] bg-[50%_120%] bg-no-repeat w-full min-h-[370px] max-[1010px]:bg-none">
         {/* Social Links */}
-        <div className="flex px-[2%] pt-[40px]">
-          <div className="flex flex-col  bg-[url('/images/bg_footer_social.png')] bg-center bg-top bg-no-repeat h-[325px] min-w-[243px] pl-[25px] pt-[25px]">
-            <h2 className="font-normal italic text-[170%] leading-[100%] text-white mb-[20px] ml-[5px] mt-0">Connect with Us</h2>
-            <div>
-              <ul className="list-none p-0 m-0 space-y-2 flex flex-col gap-1 ml-[20px] italic">
-                {socialMediaLinks.map((social, index) => (
-                  <li key={index} >
-                    <Link
-                      href={social.href}
-                      className="flex items-center gap-2 text-white underline hover:text-[#c0e901] -mt-1 no-underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Image
-                        src={social.iconSrc}
-                        alt={social.alt}
-                        width={24}
-                        height={24}
-                      />
-                      <span>{social.name}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="flex px-[2%] pt-[40px] justify-center">
+          <div className="flex flex-col flex-basis-1 bg-[url('/images/bg_footer_social.png')] bg-center bg-top bg-no-repeat h-[325px] min-w-[243px] pl-[25px] pt-[25px] max-[767px]:bg-none max-[767px]:min-w-0 max-[767px]:pl-0 max-[767px]:mr-[5px]">
+            <h2 className="font-normal italic text-[170%] leading-[100%] text-white mb-[20px] ml-[5px] mt-0 max-[767px]:hidden">Connect with Us</h2>
+            <ul className="list-none p-0 m-0 flex flex-col gap-[8px] ml-[25px] italic max-[767px]:ml-0 max-[767px]:mr-[10px]">
+              {socialMediaLinks.map((social, index) => (
+                <li key={index} >
+                  <Link
+                    href={social.href}
+                    className="flex items-center gap-2 text-white underline hover:text-[#c0e901] -mt-1 no-underline w-[22px]"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src={social.iconSrc}
+                      alt={social.alt}
+                      width={24}
+                      height={24}
+                      className='w-[22px] h-auto'
+                    />
+                    <span className='ml-[5px] max-[767px]:hidden'>{social.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className='flex flex-col'>
-            <h3 className="text-[130%] font-normal text-[#533e27]">North Georgia Cabins in Blue Ridge, GA</h3>
+          <div className='flex flex-col max-[1010px]:hidden'>
+            <h3 className="text-[130%] font-normal text-[#533e27] m-0">North Georgia Cabins in Blue Ridge, GA</h3>
             <ul className="flex flex-wrap max-w-[400px]">
               {footerMenuItems.map((item, index) => (
                 <li key={index}>
@@ -99,7 +98,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className='flex flex-col max-w-[290px]'>
+          <div className='flex flex-col max-w-[290px] max-[1010px]:flex-row max-[1010px]:max-w-[100%] max-[767px]:flex-col'>
             {/* Chamber Logos */}
             <div className='flex flex-col'>
               <p className="m-0 text-[#533e27]">Proudly serving Blue Ridge for almost 20 years!</p>
@@ -136,16 +135,8 @@ export default function Footer() {
             </div>
 
             {/* Contact Info */}
-            <div className='flex flex-col px-[15px]'>
+            <div className='flex flex-col pl-[25px]  max-[1010px]:mt-[40px]  max-[1010px]:pl-0 max-[767px]:mt-[5px]'>
               <div className="text-white text-[90%]" style={{ textShadow: '0px 0px 13px #000' }}>
-                <Image
-                  src="/images/logo.png"
-                  alt="Cabin Rentals of Georgia"
-                  width={115}
-                  height={115}
-                  className="hidden"
-                />
-                <br />
                 <span className='text-[90%]'>Cabin Rentals of Georgia, L.L.C.</span>
                 <br />
                 Main:{' '}

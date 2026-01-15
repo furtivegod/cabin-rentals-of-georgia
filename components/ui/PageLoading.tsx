@@ -14,7 +14,7 @@ interface PageLoadingProps {
   
   /**
    * Layout variant to match different page structures
-   * - "cabin": For cabin category pages (w-[67%] layout)
+   * - "cabin": For cabin category pages (layout)
    * - "container": For standard container pages (container mx-auto)
    * @default "cabin"
    */
@@ -44,7 +44,7 @@ export default function PageLoading({
   
   // Container classes based on variant
   const containerClasses = variant === 'cabin' 
-    ? 'w-[67%] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5'
+    ? 'mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5'
     : 'container mx-auto px-4 py-12'
   
   const contentClasses = variant === 'cabin'

@@ -5,46 +5,26 @@ import { apiClient } from './client'
 import { Property } from '../types'
 
 export interface PropertyListParams {
-  page?: number
-  page_size?: number
   category?: string
   amenity?: string
   bedrooms?: number
   search?: string
   status?: string
-}
-
-export interface PropertyListResponse {
-  properties: Property[]
-  total: number
-  page: number
-  page_size: number
-  total_pages: number
+  tid?: number
 }
 
 /**
  * Fetch all properties with optional filters
+ * Returns all matching cabins (no pagination)
  */
-export async function getProperties(params?: PropertyListParams): Promise<PropertyListResponse> {
-  const response = await apiClient.get<PropertyListResponse>('/api/v1/properties', {
+export async function getProperties(params?: PropertyListParams): Promise<Property[]> {
+  const response = await apiClient.get<PropertyListResponse>('/api/v1/cabins/get-cabins-by-term-id', {
     params,
   })
-  return response.data
+  return response.data.properties
 }
 
-/**
- * Fetch a single property by ID
- */
-export async function getPropertyById(id: string): Promise<Property> {
-  const response = await apiClient.get<Property>(`/api/v1/properties/${id}`)
-  return response.data
+// Internal interface for backend response
+interface PropertyListResponse {
+  properties: Property[]
 }
-
-/**
- * Fetch a single property by slug
- */
-export async function getPropertyBySlug(slug: string): Promise<Property> {
-  const response = await apiClient.get<Property>(`/api/v1/properties/slug/${slug}`)
-  return response.data
-}
-

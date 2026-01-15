@@ -80,8 +80,8 @@ export default function Header() {
   return (
     <>
       {/* Nav Bar */}
-      <div id="nav-bar" className="h-[57px] bg-[#122225] shadow-[0px_0px_20px_0px_#000] relative z-[100] inline-block w-full">
-        <div className="region-nav-bar w-full m-auto h-full flex items-center justify-between px-3 relative z-[100]">
+      <div id="nav-bar" className="h-[45px] md:h-[57px] bg-[#122225] shadow-[0px_0px_20px_0px_#000] relative z-[100] inline-block w-full">
+        <div className="region-nav-bar w-full m-auto h-full flex items-center justify-between relative z-[100] p-[6px_12px]">
           {/* Mobile Menu Icon */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -97,8 +97,8 @@ export default function Header() {
           </button>
 
           {/* Main Menu - Left Side */}
-          <div className="hidden md:flex h-full pb-[10px]">
-            <ul className="flex items-end h-full">
+          <div className="hidden md:flex h-full pb-[6px]">
+            <ul className="flex items-end h-full -ml-[10px]  max-[1010px]:-mt-[16px] max-[1010px]:-ml-[5px]">
               {mainMenuItems.map((item, index) => (
                 <li
                   key={index}
@@ -108,8 +108,7 @@ export default function Header() {
                 >
                   <Link
                     href={item.href}
-                    className={`flex items-center  text-[#91b000] no-underline px-[10px] leading-none hover:text-[#c0e901] ${index !== mainMenuItems.length - 1 ? 'border-r border-[#91b000]' : ''
-                      }`}
+                    className={`flex items-center text-[#91b000] no-underline px-[10px] leading-none hover:text-[#c0e901] text-base max-[1010px]:px-[5px]  max-[1010px]:text-[95%] ${index !== mainMenuItems.length - 1 ? 'border-r border-[#91b000]' : ''}`}
                   >
                     {item.title}
                   </Link>
@@ -140,14 +139,14 @@ export default function Header() {
           </div>
 
           {/* Right Side - Secondary Menu, Phone, Facebook Button */}
-          <div className="hidden md:flex flex-col items-end justify-center h-full">
+          <div className="flex flex-col items-end justify-center h-full">
             {/* Secondary Menu - Top */}
-            <ul className="flex items-center">
+            <ul className="hidden md:flex items-center">
               {secondaryMenuItems.map((item, index) => (
                 <li key={index} className="flex items-center">
                   <Link
                     href={item.href}
-                    className={`flex items-center text-[#7f979a] no-underline px-1.5 my-1.5 leading-none hover:text-[#c1d5d7]  ${index !== secondaryMenuItems.length - 1 ? 'border-r border-[#7f979a]' : ''
+                    className={`flex items-center text-[#7f979a] no-underline px-1.5 my-[1.5] mt-[9px] leading-none hover:text-[#c1d5d7] max-[1010px]:px-[6px] max-[1010px]:mt-[8px] max-[1010px]:text-[90%] ${index !== secondaryMenuItems.length - 1 ? 'border-r border-[#7f979a]' : ''
                       }`}
                   >
                     {item.title}
@@ -157,19 +156,19 @@ export default function Header() {
             </ul>
 
             {/* Phone Number and Facebook Button - Bottom */}
-            <div className="flex items-center gap-10">
-              <div className="text-[#91b000] text-[17px]">
+            <div className="flex items-center gap-[46px] max-[1010px]:gap-[46px] max-[1010px]:mt-[0px] ">
+              <div className="text-[#91b000] text-[17px] text-[17.6px] max-[1010px]:text-[105%] max-[1010px]:pt-[2px] max-[767px]:text-[17.28px] max-[767px]:-mr-[2px]">
                 Contact Us:{' '}
                 <Link
                   href="tel:7064322140"
-                  className="no-underline "
+                  className="no-underline max-[767px]:text-[#c0e901]"
                 >
                   706-432-2140
                 </Link>
               </div>
               <div
-                className="inline-flex items-center cursor-pointer rounded-sm text-white bg-[#4167b2] text-[12px] tracking-[0.5px] font-sans leading-[100%]"
-                style={{ padding: '4px 7px 4px 11px', fontFamily: 'Arial' }}
+                className="hidden md:inline-flex  rounded-[3px] items-center cursor-pointer rounded-sm text-white bg-[#4167b2] text-[12px] tracking-[0.5px] font-sans leading-[100%] p-[4px_7px_4px_11px] -mt-[1px] mr-[8px] max-[1010px]:mt-[2px]"
+                style={{ fontFamily: 'Arial' }}
               >
                 <i className="fa-solid fa-thumbs-up text-[13px] pr-[7px]"></i>
                 Like
@@ -221,7 +220,7 @@ export default function Header() {
           </div>
         )}
         {/* Logo */}
-        <div id="logo" className="relative m-auto z-[100] w-[276px] mt-2.5 top-0">
+        <div id="logo" className="relative m-auto z-[100] w-[180px] md:w-[276px] -top-[47px] max-[1010px]:-top-[37px] max-[767px]:-top-[45px] ">
           <Link href="/" className="h-auto absolute top-0">
             <Image
               src="/images/logo.png"
