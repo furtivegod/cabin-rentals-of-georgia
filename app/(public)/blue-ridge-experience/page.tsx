@@ -2,18 +2,18 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getTermBySlug } from '@/lib/api/taxonomy'
 import PageLoading from '@/components/ui/PageLoading'
-import { getAllCabins } from '@/lib/api/cabins'
-import CabinCard from '@/components/cabin/CabinCard'
-import { Property } from '@/lib/types'
+import { getAllActivities } from '@/lib/api/activities'
+import Image from 'next/image'
+import Link from 'next/link'
 
-const slug = 'blue-ridge-cabins'
-async function BlueRidgeCabinsContent() {
+const slug = 'blue-ridge-experience'
+async function BlueRidgeExperienceContent() {
   try {
     const term = await getTermBySlug(slug)
     // Use page title if available, otherwise use term name
     const title = term.page_title || term.name
 
-    const cabins = await getAllCabins()
+    const activities = await getAllActivities()
     return (
       <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <h1 className="text-4xl mb-8">{title}</h1>
@@ -21,9 +21,16 @@ async function BlueRidgeCabinsContent() {
           className="prose prose-lg mx-auto mb-8 block"
           dangerouslySetInnerHTML={{ __html: term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available' }}
         />
-        <div className="flex flex-col gap-[20px]">
-          { cabins.length > 0 && cabins.map((property: Property) => (
-            <CabinCard key={property.id} property={property} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          {activities.map((activity) => (
+            <div key={activity.id} className="border border-gray-200 rounded-lg overflow-hidden">
+              {activity.featured_image_url && <Image src={activity.featured_image_url} alt={activity.title} width={100} height={100} />}
+              <Link href={`/activity/${activity.activity_slug}`} className="hover:underline">
+                <h2 className="font-normal text-white text-[19px] m-0">{activity.title}</h2>
+              </Link>
+
+              <p className="text-white text-[16px] italic">{activity.activity_type}</p>
+            </div>
           ))}
         </div>
       </div>
@@ -50,10 +57,10 @@ async function BlueRidgeCabinsContent() {
   }
 }
 
-export default async function BlueRidgeCabinsPage() {
+export default async function BlueRidgeExperiencePage() {
   return (
-    <Suspense fallback={<PageLoading message="Loading cabin listings..." variant="cabin" />}>
-      <BlueRidgeCabinsContent />
+    <Suspense fallback={<PageLoading message="Loading information about Blue Ridge Experience..." variant="cabin" />}>
+      <BlueRidgeExperienceContent />
     </Suspense>
   )
 }
@@ -62,12 +69,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const term = await getTermBySlug(slug)
   if (!term) {
     return {
-      title: 'Blue Ridge Cabins | Cabin Rentals of Georgia',
+      title: 'Blue Ridge Experience | Cabin Rentals of Georgia',
       description: 'Browse our complete collection of luxury cabin rentals in Blue Ridge, GA. From cozy 2-bedrooms to spacious 5-bedroom lodges, find your perfect mountain getaway.',
     } as Metadata
   }
   return {
-    title: `${term.name} | Cabin Rentals of Georgia`,
+    title: `${term.name} Experience | Cabin Rentals of Georgia`,
     description: term.description,
   } as Metadata
 }

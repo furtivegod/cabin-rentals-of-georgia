@@ -59,6 +59,15 @@ export interface ActivityListParams {
   activity_type_tid?: number
 }
 
+
+/**
+ * Fetch all activities without pagination and filtering
+ */
+export async function getAllActivities(): Promise<Activity[]> {
+  const response = await apiClient.get<Activity[]>('/api/v1/activities/getAllActivities')
+  return response.data
+}
+
 /**
  * Fetch all activities with optional filters
  */

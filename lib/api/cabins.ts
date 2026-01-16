@@ -1,7 +1,13 @@
 /**
  * Cabin API functions
  */
+import { Property } from '../types'
 import { apiClient } from './client'
+
+// Internal interface for backend response
+interface PropertyListResponse {
+  properties: Property[]
+}
 
 export interface Cabin {
   id: string
@@ -89,3 +95,18 @@ export async function getCabinById(id: string): Promise<Cabin> {
   return response.data
 }
 
+
+
+export interface PropertyListParams {
+  category?: string
+  amenity?: string
+  bedrooms?: number
+  search?: string
+  status?: string
+  tid?: number
+}
+
+export async function getAllCabins(): Promise<Property[]> {
+  const response = await apiClient.get<PropertyListResponse>('/api/v1/cabins/getAllCabins')
+  return response.data.properties
+}

@@ -9,21 +9,23 @@ interface CabinCardProps {
 }
 
 const amenityIcons: Record<string, string> = {
-  internet: '/images/icons/icon_internet_0.png',
-  'hot-tub': '/images/icons/icon_hot_tub_0.png',
-  coffee: '/images/icons/icon_keurig2.png',
-  'gas-grill': '/images/icons/icon_gas_grill.png',
-  'outdoor-fireplace': '/images/icons/icon_outdoor_fireplace_0.png',
-  'indoor-fireplace': '/images/icons/icon_indoor_fireplace_0.png',
-  'no-smoking': '/images/icons/icon_no_smoking_0.png',
-  pets: '/images/icons/icon_pets.png',
-  'game-room': '/images/icons/icon_video_games_0.png',
-  billiards: '/images/icons/icon_billiards_0.png',
-  motorcycle: '/images/icons/motorcycle_icon_4.25KB_matched.png',
+  "High Speed Internet": '/images/icons/icon_internet_0.png',
+  "Hot Tub": '/images/icons/icon_hot_tub_0.png',
+  "Coffee Pot": '/images/icons/icon_keurig2.png',
+  'Gas Grill': '/images/icons/icon_gas_grill.png',
+  'Outdoor Fireplaces': '/images/icons/icon_outdoor_fireplace_0.png',
+  "Indoor Fireplaces": '/images/icons/icon_indoor_fireplace_0.png',
+  'Non-Smoking': '/images/icons/icon_no_smoking_0.png',
+  "Pet-Friendly": '/images/icons/icon_pets.png',
+  'Game Room': '/images/icons/icon_video_games_0.png',
+  "Billiard Table": '/images/icons/icon_billiards_0.png',
+  "Motorcycle Friendly": '/images/icons/motorcycle_icon_4.25KB_matched.png',
 }
 
 export default function CabinCard({ property }: CabinCardProps) {
-  console.log(property, "property")
+  if (!property) {
+    return null
+  }
   return (
     <div
       className={`relative w-full`}
@@ -34,7 +36,7 @@ export default function CabinCard({ property }: CabinCardProps) {
         <div className="block">
           <Link href={`/cabin/${property.cabin_slug}`}>
             <Image
-              src={property?.featured_image_url || ''}
+              src={property?.featured_image_url?.replace('/sites/default/files/', '/images/') || ''}
               alt={`${property?.title || ''} | Cabin Rentals of Georgia`}
               width={609}
               height={390}
@@ -80,19 +82,19 @@ export default function CabinCard({ property }: CabinCardProps) {
         <div className="flex flex-col items-center">
           <button
             className="bg-[url('/images/icon_save_favorite5.png')] bg-center bg-no-repeat w-[100px] h-[30px] text-white text-[110%]" />
-          {/* <div className="flex mt-5">
-            {cabin.amenities.map((amenity) => (
+          <div className="flex mt-5 justify-center items-center gap-[3px]">
+            {property.amenities?.map((amenity) => (
               <Image
-                key={amenity}
-                src={amenityIcons[amenity] || '/images/icon_internet_0.png'}
-                alt={amenity.replace('-', ' ')}
-                title={amenity.replace('-', ' ')}
+                key={amenity.name}
+                src={amenityIcons[amenity.name] || '/images/icon_internet_0.png'}
+                alt={amenity.name}
+                title={amenity.name}
                 width={24}
                 height={24}
                 className='cursor-pointer'
               />
             ))}
-          </div> */}
+          </div>
         </div>
       </div>
     </div>

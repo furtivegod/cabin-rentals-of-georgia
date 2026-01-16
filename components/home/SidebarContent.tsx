@@ -119,7 +119,7 @@ export default function SidebarContent() {
                 {cta.title}
               </Link>
             </h2>
-            <div className="w-[255px] h-[155px] mx-auto my-0">
+            <div className="mx-auto my-0">
               <Link href={cta.href}>
                 <Image
                   src={cta.image}

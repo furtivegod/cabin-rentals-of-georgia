@@ -74,7 +74,7 @@ export default function CabinListing({ category, amenity, bedrooms, tid }: Cabin
   }
   return (
     <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col gap-[20px]">
         {properties.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-[#533e27] text-lg">No cabins found matching your criteria.</p>
