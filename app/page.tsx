@@ -1,4 +1,3 @@
-import FeaturedCabins from '@/components/home/FeaturedCabins'
 import Link from 'next/link'
 import { getAllCabins } from '@/lib/api/cabins'
 import CabinCard from '@/components/cabin/CabinCard'

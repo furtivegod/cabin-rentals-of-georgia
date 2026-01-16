@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import HeroSlider from '@/components/home/HeroSlider'
 import PropertySearch from '@/components/property/PropertySearch'
-import FeaturedCabins from '@/components/home/FeaturedCabins'
 import Sidebar from '@/components/home/Sidebar'
 import Footer from '@/components/layout/Footer'
 import Header from '@/components/layout/Header'
