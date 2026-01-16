@@ -24,8 +24,25 @@ const nextConfig = {
       }] : []),
     ],
   },
+  async rewrites() {
+    if (!r2PublicUrl) {
+      return []
+    }
+
+    return [
+      {
+        source: '/images/:path*',
+        destination: `${r2PublicUrl}/images/:path*`,
+      },
+      {
+        source: '/sites/default/files/:path*',
+        destination: `${r2PublicUrl}/images/:path*`,
+      },
+    ]
+  },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+    NEXT_PUBLIC_R2_PUBLIC_URL: r2PublicUrl,
   },
 }
 

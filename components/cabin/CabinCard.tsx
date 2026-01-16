@@ -36,7 +36,7 @@ export default function CabinCard({ property }: CabinCardProps) {
         <div className="block">
           <Link href={`/cabin/${property.cabin_slug}`}>
             <Image
-              src={property?.featured_image_url?.replace('/sites/default/files/', '/images/') || ''}
+              src={property?.featured_image_url?.replaceAll('/sites/default/files/', '/images/') || ''}
               alt={`${property?.title || ''} | Cabin Rentals of Georgia`}
               width={609}
               height={390}
