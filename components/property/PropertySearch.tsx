@@ -116,7 +116,7 @@ export default function PropertySearch() {
                 </div>
               </form>
             ) : (
-              <h2 className="text-center italic text-[35px] text-[#533e27] mt-0">
+              <h2 className="text-center italic text-[35px] text-[#533e27] mt-0 max-[1010px]:text-[180%]">
                 Blue Ridge Property Management
               </h2>
             )}

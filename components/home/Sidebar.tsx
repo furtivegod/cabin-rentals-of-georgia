@@ -12,7 +12,7 @@ export default function ConditionalSidebar() {
   }
   
   return (
-    <div className="bg-[url('/images/bg_sidebar2.png')] bg-[50%_0%]  min-h-[200px] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top">
+    <div className="w-[33%] max-[767px]:w-full flex-shrink-0 bg-[url('/images/bg_sidebar2.png')] bg-[50%_0%]  min-h-[200px] mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top">
       <SidebarContent />
     </div>
   )

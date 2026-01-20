@@ -26,12 +26,10 @@ export default function RootLayout({
         <div className="mb-10 max-w-[972px] w-[1010px] mx-auto w-[xplear plear -auto m972px] bg-[url('/images/bg_content.jpg')] bg-[50%_0] shadow-[0px_30px_60px_5px_#000] -top-5 relative z-[2] max-[1010px]:w-[724px] max-[767px]:w-[94%]">
           <div className="relative top-2.5">
             <div className="flex w-full max-[767px]:flex-col">
-              <div className='w-[67%] max-[767px]:w-full'>
+              <div className='w-full max-[767px]:w-full'>
                 {children}
               </div>
-              <div className='w-[33%] max-[767px]:w-full'>
-                <Sidebar />
-              </div>
+              <Sidebar />
             </div>
           </div>
           <Footer />
