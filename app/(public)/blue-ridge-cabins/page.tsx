@@ -5,6 +5,7 @@ import PageLoading from '@/components/ui/PageLoading'
 import { getAllCabins } from '@/lib/api/cabins'
 import CabinCard from '@/components/cabin/CabinCard'
 import { Property } from '@/lib/types'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 const slug = 'blue-ridge-cabins'
 async function BlueRidgeCabinsContent() {
@@ -17,9 +18,9 @@ async function BlueRidgeCabinsContent() {
     return (
       <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <h1 className="text-4xl mb-8">{title}</h1>
-        <div
+        <ProcessedHTML
+          html={term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available'}
           className="prose prose-lg mx-auto mb-8 block"
-          dangerouslySetInnerHTML={{ __html: term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available' }}
         />
         <div className="flex flex-col gap-[20px]">
           { cabins.length > 0 && cabins.map((property: Property) => (

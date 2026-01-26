@@ -28,6 +28,7 @@ export interface Property {
   latitude: number | null
   longitude: number | null
   streamline_id: number | null
+  minimum_rate: number | null
   city: string | null
   state: string | null
   address: string | null

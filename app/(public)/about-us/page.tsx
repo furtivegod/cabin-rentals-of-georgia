@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { AboutUs, getAboutUs } from '@/lib/api/about-us'
 import { cleanHtmlContent } from '@/lib/utils/html-utils'
 import PageLoading from '@/components/ui/PageLoading'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 export const metadata = {
   title: 'About Us - Cabin Rentals of Georgia',
@@ -29,9 +30,9 @@ async function AboutUsContent() {
             <h1 className="text-4xl font-bold mb-8">{aboutUs.title}</h1>
             
             {aboutUs.body ? (
-              <div 
+              <ProcessedHTML
+                html={cleanHtmlContent(aboutUs.body)}
                 className="prose prose-lg mx-auto mb-8 block"
-                dangerouslySetInnerHTML={{ __html: cleanHtmlContent(aboutUs.body) }}
               />
             ) : (
               <div className="prose prose-lg mx-auto mb-8">

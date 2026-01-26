@@ -5,6 +5,7 @@ import { getTestimonials, Testimonial } from '@/lib/api/testimonials'
 import { cleanHtmlContent, stripHtmlTags } from '@/lib/utils/html-utils'
 import PageLoading from '@/components/ui/PageLoading'
 import Link from 'next/link'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 const slug = 'blue-ridge-memories'
 
@@ -37,9 +38,9 @@ async function BlueRidgeMemoriesContent() {
         <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
           <em>{title}</em>
         </h1>
-        <div
+        <ProcessedHTML
+          html={term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available'}
           className="prose prose-lg mx-auto mb-8 block"
-          dangerouslySetInnerHTML={{ __html: term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available' }}
         />
         <div className="flex flex-col">
           {testimonials.length === 0 ? (
@@ -102,9 +103,9 @@ async function BlueRidgeMemoriesContent() {
 
                     {/* Testimonial Body */}
                     {testimonial.body ? (
-                      <div
+                      <ProcessedHTML
+                        html={cleanHtmlContent(testimonial.body)}
                         className="text-[#533e27] italic leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: cleanHtmlContent(testimonial.body) }}
                       />
                     ) : testimonial.body_summary ? (
                       <p className="text-[#533e27] italic leading-relaxed">

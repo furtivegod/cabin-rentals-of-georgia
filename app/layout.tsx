@@ -19,6 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="shortcut icon" href="/icons/favicon.ico" type="image/x-icon" />
+      </head>
       <body className="bg-[url('/images/bg_wrapper3.jpg')] bg-[50%_0%] bg-white">
         <Header />
         <HeroSlider />

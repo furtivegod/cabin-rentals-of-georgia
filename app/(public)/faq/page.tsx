@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { FAQ, getFAQs } from '@/lib/api/faqs'
 import PageLoading from '@/components/ui/PageLoading'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 export const metadata = {
   title: 'FAQ - Cabin Rentals of Georgia',
@@ -36,9 +37,9 @@ async function FAQContent() {
             {faqs.map((faq) => (
               <div key={faq.id}>
                 <h1 className="text-[210%]">{faq.question}</h1>
-                <div 
+                <ProcessedHTML
+                  html={faq.answer}
                   className="prose prose-sm max-w-none block"
-                  dangerouslySetInnerHTML={{ __html: faq.answer }}
                 />
                 {faq.category && (
                   <div className="mt-4">

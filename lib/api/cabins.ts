@@ -22,6 +22,7 @@ export interface Cabin {
   bathrooms: string | null
   bathrooms_tid: number | null
   sleeps: number | null
+  minimum_rate: number | null
   property_type: string | null
   property_type_tid: number | null
   amenities: any[] | null

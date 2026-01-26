@@ -3,29 +3,17 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Property } from '@/lib/types'
+import { amenityIcons } from '@/lib/constants/amenity-icons'
 
 interface CabinCardProps {
   property: Property
-}
-
-const amenityIcons: Record<string, string> = {
-  "High Speed Internet": '/images/icons/icon_internet_0.png',
-  "Hot Tub": '/images/icons/icon_hot_tub_0.png',
-  "Coffee Pot": '/images/icons/icon_keurig2.png',
-  'Gas Grill': '/images/icons/icon_gas_grill.png',
-  'Outdoor Fireplaces': '/images/icons/icon_outdoor_fireplace_0.png',
-  "Indoor Fireplaces": '/images/icons/icon_indoor_fireplace_0.png',
-  'Non-Smoking': '/images/icons/icon_no_smoking_0.png',
-  "Pet-Friendly": '/images/icons/icon_pets.png',
-  'Game Room': '/images/icons/icon_video_games_0.png',
-  "Billiard Table": '/images/icons/icon_billiards_0.png',
-  "Motorcycle Friendly": '/images/icons/motorcycle_icon_4.25KB_matched.png',
 }
 
 export default function CabinCard({ property }: CabinCardProps) {
   if (!property) {
     return null
   }
+  
   return (
     <div
       className={`relative w-full`}
@@ -36,7 +24,7 @@ export default function CabinCard({ property }: CabinCardProps) {
         <div className="block">
           <Link href={`/cabin/${property.cabin_slug}`}>
             <Image
-              src={property?.featured_image_url?.replaceAll('/sites/default/files/', '/images/') || ''}
+              src={property?.featured_image_url?.replace("/sites/default/files/", "/images/styles/cabins_listing_large2/public/") || ''}
               alt={`${property?.title || ''} | Cabin Rentals of Georgia`}
               width={609}
               height={390}
@@ -76,7 +64,7 @@ export default function CabinCard({ property }: CabinCardProps) {
           {/* Minimum Rate */}
           <div className="-mt-2 text-[110%] text-[#533e27]">
             {/* {property.rate} */}
-            from $465/night
+            from ${property?.minimum_rate || 0}/night
           </div>
         </div>
         <div className="flex flex-col items-center">

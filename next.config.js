@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const r2PublicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || ''
-
+console.log(r2PublicUrl)
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -16,6 +16,10 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'maps.googleapis.com',
       },
       // Add custom R2 domain if provided
       ...(r2PublicUrl ? [{

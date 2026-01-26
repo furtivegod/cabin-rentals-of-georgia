@@ -5,6 +5,7 @@ import PageLoading from '@/components/ui/PageLoading'
 import { getAllActivities } from '@/lib/api/activities'
 import Image from 'next/image'
 import Link from 'next/link'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 const slug = 'blue-ridge-experience'
 async function BlueRidgeExperienceContent() {
@@ -17,9 +18,9 @@ async function BlueRidgeExperienceContent() {
     return (
       <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <h1 className="text-4xl mb-8">{title}</h1>
-        <div
+        <ProcessedHTML
+          html={term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available'}
           className="prose prose-lg mx-auto mb-8 block"
-          dangerouslySetInnerHTML={{ __html: term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available' }}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {activities.map((activity) => (

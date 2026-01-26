@@ -5,6 +5,9 @@ import { getCabinBySlug, Cabin } from '@/lib/api/cabins'
 import { cleanHtmlContent, stripHtmlTags } from '@/lib/utils/html-utils'
 import PageLoading from '@/components/ui/PageLoading'
 import Image from 'next/image'
+import { amenityIcons } from '@/lib/constants/amenity-icons'
+import CabinGallery from '@/components/cabin/CabinGallery'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 interface PageProps {
   params: {
@@ -63,6 +66,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
+// Create a component for the cabin body
+const CabinBody = ({ cabin, className }: { cabin: Cabin, className: string }) => {
+  return (
+    cabin.body && (
+      <ProcessedHTML
+        html={cleanHtmlContent(cabin.body.replaceAll("https://www.cabin-rentals-of-georgia.com", ""))}
+        className={className}
+      />
+    )
+  )
+}
+
+// Create a component for the property features
+const PropertyFeatures = ({ cabin, className }: { cabin: Cabin, className: string }) => {
+  return (
+    <div className={className}>
+      <h3 className="text-[20px] text-[#533e27] font-normal my-[15px] leading-[15px] mt-[30px]">Property Features</h3>
+      <ul className="list-disc list-inside space-y-2 text-[#533e27]">
+        {cabin.features?.map((feature, index) => (
+          <li key={index}>{feature}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 /**
  * Cabin content component
  * 
@@ -88,104 +117,132 @@ async function CabinContent({ slug }: { slug: string[] }) {
       <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5 block">
         {/* Featured Image */}
         {cabin.featured_image_url && (
-          <div className="mb-6">
+          <div className="mb-1 relative text-white leading-[23px]">
             <Image
-              src={cabin.featured_image_url}
+              src={cabin.featured_image_url.replace("/sites/default/files/", "/images/styles/cabin_featured_main2/public/")}
               alt={cabin.featured_image_alt || cabin.title}
               title={cabin.featured_image_title || undefined}
               width={cabin.featured_image_width || 800}
               height={cabin.featured_image_height || 600}
-              className="w-full h-auto rounded-lg shadow-md"
+              className="w-full h-auto p-[3px]"
               priority
+              style={{ boxShadow: '0 0 10px #333' }}
             />
+            <span className='absolute bottom-[10px] right-[20px] text-[140%]'>+<i>{cabin.gallery_images?.length}</i><br />Photos</span>
           </div>
         )}
 
-        {/* Cabin Title */}
-        <div className='flex items-center justify-between'>
-          <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
+        <div className='flex items-center justify-between pl-[20px] max-[767px]:justify-center'>
+          {/* Cabin Title */}
+          <h1 className="font-normal italic text-[42px] max-[1010px]:text-[36px] text-[#7c2c00] leading-[100%] my-[15px] mx-0 leading-[100%]">
             <em>{cabin.title}</em>
           </h1>
-          <button
-            className="bg-[url('/images/icon_save_favorite5.png')] bg-center bg-no-repeat w-[100px] h-[30px] text-white text-[110%]" />
+          <button className="bg-[url('/images/icon_save_favorite5.png')] bg-center bg-no-repeat w-[100px] h-[30px] text-white text-[110%] max-[767px]:hidden" />
         </div>
 
-        {/* Property Details */}
-        <div className="mb-6 flex flex-wrap gap-4 text-[#533e27]">
-          {cabin.bedrooms && (
-            <span className="font-semibold">Bedrooms: {cabin.bedrooms}</span>
-          )}
-          {cabin.bathrooms && (
-            <span className="font-semibold">Bathrooms: {cabin.bathrooms}</span>
-          )}
-          {cabin.sleeps && (
-            <span className="font-semibold">Sleeps: {cabin.sleeps}</span>
-          )}
-          {/* {cabin.property_type && (
-            <span className="font-semibold">Type: {cabin.property_type}</span>
-          )} */}
-        </div>
-
-        {/* Body Content */}
-        {cabin.body ? (
-          <div
-            className="prose prose-lg max-w-none mb-8 text-[#533e27]"
-            dangerouslySetInnerHTML={{ __html: cleanHtmlContent(cabin.body.replaceAll("https://www.cabin-rentals-of-georgia.com", "")) }}
-          />
-        ) : cabin.body_summary ? (
-          <p className="mb-8 text-[#533e27] text-lg">
-            {stripHtmlTags(cabin.body_summary)}
-          </p>
-        ) : null}
-
-        {/* Features */}
-        {cabin.features && cabin.features.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-[#7c2c00]">Features</h2>
-            <ul className="list-disc list-inside space-y-2 text-[#533e27]">
-              {cabin.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
+        <div className='flex flex-col gap-[5px] p-[0px_0px_20px_20px] bg-[url("/images/cabin_separator.png")] bg-[center_bottom] bg-no-repeat max-[1010px]:w-[53%] max-[767px]:w-[100%] max-[767px]:text-center'>
+          {/* Property Listings */}
+          <div className='text-[#5333e27] text-[21px] max-[1010px]:text-[17.28px] italic leading-[100%]'>
+            {cabin.property_type && cabin.property_type.length > 0 && Array.isArray(cabin.property_type) && (
+              <>
+                {cabin.property_type.map(item => item.name).join(', ')}
+              </>
+            )}
           </div>
-        )}
-
-        {/* Amenities */}
-        {cabin.amenities && cabin.amenities.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-[#7c2c00]">Amenities</h2>
-            <div className="flex flex-wrap gap-2">
+          {/* Property Details */}
+          <div className="text-[#533e27] text-[21px] max-[1010px]:text-[17.28px] italic leading-[100%]">
+            {cabin.bedrooms && (
+              <span>{cabin.bedrooms}, </span>
+            )}
+            {cabin.bathrooms && (
+              <span>{cabin.bathrooms}</span>
+            )}
+            {cabin.sleeps && (
+              <span> ~ Sleeps {cabin.sleeps}</span>
+            )}
+          </div>
+          {/* Daily rate */}
+          <div className="text-[#533e27] text-[21px] max-[1010px]:text-[17.28px] italic leading-[100%]">
+            from ${cabin.minimum_rate || 0}/night (view daily rates)
+          </div>
+          {/* Amenities */}
+          {cabin.amenities && cabin.amenities.length > 0 && (
+            <div className="flex flex-wrap gap-[5px] mt-[5px] items-center max-[767px]:justify-center">
               {cabin.amenities.map((amenity: any, index: number) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-[#7c2c00] text-white rounded-full text-sm"
-                >
-                  {amenity.name || amenity}
-                </span>
+                <Image
+                  key={amenity.name}
+                  src={amenityIcons[amenity.name] || '/images/icon_internet_0.png'}
+                  alt={amenity.name}
+                  title={amenity.name}
+                  width={24}
+                  height={24}
+                  className='cursor-pointer'
+                />
               ))}
             </div>
+          )}
+        </div>
+
+        <div className='flex items-start justify-between max-[1010px]:justify-end max-[767px]:justify-center'>
+          <div className='flex flex-col w-[62%] hidden min-[1010px]:block'>
+            {/* Body Content */}
+            <CabinBody
+              cabin={cabin}
+              className=''
+            />
+            <PropertyFeatures
+              cabin={cabin}
+              className=''
+            />
           </div>
-        )}
+
+          {/* Right Side Content */}
+          <div className='flex flex-col w-[38%] flex-shrink-0 -mt-[140px] max-[1010px]:w-[50%] max-[1010px]:-mt-[170px] max-[767px]:mt-0'>
+            <Image
+              src='/images/btn_instant_quote_small.png'
+              alt='Instant Quote'
+              width={196}
+              height={196}
+              className='cursor-pointer p-[3px] object-contain mx-auto'
+            />
+            <span className='text-[19px] text-center text-[#7c2c00] hover:[#b7714b] leading-[100%] cursor-pointer italic underline mt-[5px]'>Detailed Price</span>
+            <span className='text-[14px] mb-[10px] text-center'>Available to reserve online 24/7</span>
+            <Image
+              src={`https://maps.googleapis.com/maps/api/staticmap?center=${cabin.latitude},${cabin.longitude}&zoom=15&size=190x190&maptype=roadmap&markers=size:small%7Ccolor:red%7C${cabin.latitude},${cabin.longitude}&scale=2&format=png32&key=AIzaSyD0ozy1aDQV-n8bQBm3gMaaiyw499-zsug`}
+              alt='Cabin Map'
+              width={196}
+              height={196}
+              className='cursor-pointer p-[3px] w-[196px] h-[196px] object-cover p-[3px] mx-auto  bg-white'
+              style={{ boxShadow: '0 0 10px #333' }}
+            />
+
+            {/* Features */}
+            <PropertyFeatures
+              cabin={cabin}
+              className='max-[1010px]:hidden'
+            />
+          </div>
+        </div>
+
+        <div className='flex-col hidden max-[1010px]:flex'>
+          <CabinBody
+            cabin={cabin}
+            className='block min-[1010px]:hidden'
+          />
+
+          <PropertyFeatures
+            cabin={cabin}
+            className='block min-[1010px]:hidden'
+          />
+        </div>
 
         {/* Gallery Images */}
         {cabin.gallery_images && cabin.gallery_images.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-[#7c2c00]">Gallery</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {cabin.gallery_images.map((image: any, index: number) => (
-                <div key={index} className="relative aspect-square">
-                  <Image
-                    src={image.url || ''}
-                    alt={image.alt || cabin.title}
-                    title={image.title || undefined}
-                    width={image.width || 300}
-                    height={image.height || 300}
-                    className="w-full h-full object-cover rounded-lg shadow-md"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          <CabinGallery
+            images={cabin.gallery_images}
+            cabinTitle={cabin.title}
+            cabinInfo={`${cabin.bedrooms || ''}, ${cabin.bathrooms || ''}${cabin.sleeps ? ` ~ Sleeps ${cabin.sleeps}` : ''}`}
+          />
         )}
 
         {/* Location */}

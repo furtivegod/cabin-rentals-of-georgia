@@ -57,7 +57,7 @@ export default function CabinListing({ category, amenity, bedrooms, tid }: Cabin
     return (
       <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <div className="text-center py-10">
-          <p className="text-[#533e27] text-lg">... Please wait...</p>
+          <p className="text-[#533e27] text-lg italic">Loading Cabins...</p>
         </div>
       </div>
     )

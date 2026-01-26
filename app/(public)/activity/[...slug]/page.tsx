@@ -4,6 +4,7 @@ import { getActivityByActivitySlug } from '@/lib/api/activities'
 import PageLoading from '@/components/ui/PageLoading'
 import Image from 'next/image'
 import { cleanHtmlContent } from '@/lib/utils/html-utils'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 interface PageProps {
   params: {
@@ -116,9 +117,9 @@ async function ActivityContent({ slug }: { slug: string[] }) {
 
         {/* Body Content */}
         {activity.body && (
-          <div
+          <ProcessedHTML
+            html={cleanHtmlContent(activity.body.replaceAll("https://www.cabin-rentals-of-georgia.com", ""))}
             className="prose prose-lg max-w-none mb-8 text-[#533e27] block"
-            dangerouslySetInnerHTML={{ __html: cleanHtmlContent(activity.body.replaceAll("https://www.cabin-rentals-of-georgia.com", "")) }}
           />
         )}
 
@@ -151,16 +152,6 @@ async function ActivityContent({ slug }: { slug: string[] }) {
             )}
           </div>
         )}
-
-        {/* Back Link */}
-        <div className="mt-8">
-          <a
-            href="/activities"
-            className="text-[#7c2c00] hover:underline font-semibold"
-          >
-            ← Back to Activities
-          </a>
-        </div>
       </div>
     )
   } catch (error: any) {
@@ -177,12 +168,6 @@ async function ActivityContent({ slug }: { slug: string[] }) {
                 ? 'The activity you are looking for could not be found. Please check the URL and try again.'
                 : 'Unable to load activity content. Please try again later.'}
             </p>
-            <a
-              href="/activities"
-              className="mt-4 inline-block text-[#7c2c00] hover:underline font-semibold"
-            >
-              ← Back to Activities
-            </a>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { Blog, getBlogBySlug } from '@/lib/api/blogs'
 import { cleanHtmlContent, stripHtmlTags } from '@/lib/utils/html-utils'
 import PageLoading from '@/components/ui/PageLoading'
 import Link from 'next/link'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 interface PageProps {
   params: {
@@ -143,9 +144,9 @@ async function BlogPostContent({ params }: PageProps) {
 
           {/* Blog body */}
           {blog.body ? (
-            <article 
+            <ProcessedHTML
+              html={cleanHtmlContent(blog.body)}
               className="prose prose-lg max-w-none mb-8 block"
-              dangerouslySetInnerHTML={{ __html: cleanHtmlContent(blog.body) }}
             />
           ) : (
             <div className="prose prose-lg max-w-none mb-8">
@@ -159,9 +160,9 @@ async function BlogPostContent({ params }: PageProps) {
           {blog.body_summary && (
             <div className="mt-8 p-4 bg-gray-50 rounded-lg">
               <h2 className="text-xl font-semibold mb-2">Summary</h2>
-              <div 
+              <ProcessedHTML
+                html={cleanHtmlContent(blog.body_summary)}
                 className="prose prose-sm"
-                dangerouslySetInnerHTML={{ __html: cleanHtmlContent(blog.body_summary) }}
               />
             </div>
           )}
@@ -185,11 +186,6 @@ async function BlogPostContent({ params }: PageProps) {
             <p className="text-gray-700 mb-6">
               We encountered an error while loading this blog post. Please try again later.
             </p>
-            <Link 
-              href="/blogs" 
-            >
-              ← Back to Blog
-            </Link>
           </div>
         </div>
       </div>

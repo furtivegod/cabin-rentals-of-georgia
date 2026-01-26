@@ -73,7 +73,7 @@ export default function Footer() {
                       alt={social.alt}
                       width={24}
                       height={24}
-                      className='w-[22px] h-auto'
+                      className='w-[22px] h-auto shrink-0'
                     />
                     <span className='ml-[5px] max-[767px]:hidden'>{social.name}</span>
                   </Link>

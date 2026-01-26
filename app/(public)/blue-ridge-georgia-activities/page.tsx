@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { getPageBySlug } from '@/lib/api/pages'
 import PageLoading from '@/components/ui/PageLoading'
 import { cleanHtmlContent } from '@/lib/utils/html-utils'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 const slug = 'blue-ridge-georgia-activities'
 
@@ -17,9 +18,9 @@ async function BlueRidgeGeorgiaActivitiesContent() {
         <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
           <em>{title}</em>
         </h1>
-        <div
+        <ProcessedHTML
+          html={cleanHtmlContent(body.replaceAll("https://www.cabin-rentals-of-georgia.com", ""))}
           className="prose prose-lg max-w-none text-[#533e27] text-[120%] mb-8 block"
-          dangerouslySetInnerHTML={{ __html: cleanHtmlContent(body.replaceAll("https://www.cabin-rentals-of-georgia.com", "")) }}
         />
       </div>
     )

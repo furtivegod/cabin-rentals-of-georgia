@@ -108,7 +108,7 @@ export default function PropertyManagementContent() {
             </div>
           ))}
         </div>
-        <div className="bg-[url('/images/sc left-0roll_divider.png')] h-[20px] bg-containo-repeat bg-center mx-auto mt-[20px] bg-[length:95%]"></div>
+        <div className="bg-[url('/images/scroll_divider.png')] h-[20px] bg-no-repeat bg-center mx-auto mt-[20px] bg-[length:95%]"></div>
         <div className="rating-logos flex flex-wrap justify-center items-center gap-6 mt-8">
           <Image src="/images/vrbo_premier_host.png" alt="VRBO Premier Host" width={150} height={75} className="object-contain" />
           <Image src="/images/google_5star.png" alt="Google 5 Stars" width={150} height={75} className="object-contain" />

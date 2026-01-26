@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { Policy, getRentalPolicies } from '@/lib/api/policies'
 import { cleanHtmlContent } from '@/lib/utils/html-utils'
 import PageLoading from '@/components/ui/PageLoading'
+import ProcessedHTML from '@/components/content/ProcessedHTML'
 
 export const metadata = {
   title: 'Rental Policies - Cabin Rentals of Georgia',
@@ -29,9 +30,9 @@ async function RentalPoliciesContent() {
             <h1 className="text-4xl font-bold mb-8">{policy.title}</h1>
             
             {policy.body ? (
-              <div 
+              <ProcessedHTML
+                html={cleanHtmlContent(policy.body)}
                 className="prose prose-lg mx-auto mb-8 block"
-                dangerouslySetInnerHTML={{ __html: cleanHtmlContent(policy.body) }}
               />
             ) : (
               <div className="space-y-6">

@@ -127,7 +127,7 @@ export default function SidebarContent() {
                   title={cta.titleAttr}
                   width={255}
                   height={155}
-                  className="w-full h-auto"
+                  className="w-full h-auto max-w-[255px] mx-auto"
                 />
               </Link>
             </div>
