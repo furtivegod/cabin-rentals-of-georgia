@@ -32,7 +32,7 @@ export default function CabinGallery({ images, cabinTitle, cabinInfo }: CabinGal
   return (
     <>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-[#7c2c00]">Photos (click for larger image)</h2>
+        <h3 className="text-[130%] mb-4 bg-[url('/images/cabin_separator.png')] bg-[center_top] bg-no-repeat mt-0 p-[35px_0px_5px] text-[#533e27]">Photos (click for larger image)</h3>
         <div className="flex flex-wrap justify-center gap-4">
           {images.map((image: GalleryImage, index: number) => (
             <div key={index} className="flex flex-col w-auto">
@@ -48,7 +48,7 @@ export default function CabinGallery({ images, cabinTitle, cabinInfo }: CabinGal
                   className="object-cover cursor-pointer max-[767px]:!static max-[767px]:!w-full max-[767px]:!h-auto p-[3px]"
                 />
               </button>
-              <h4 className="mt-[3px] text-[#b7714b] text-[16px] w-[275px] max-[1010px]:w-[200px] max-[767px]:w-full max-[767px]:max-w-[420px]">
+              <h4 className="mt-[7px] text-[#7c2c00] hover:text-[#b7714b] cursor-pointer text-[16px] w-[275px] max-[1010px]:w-[200px] max-[767px]:w-full max-[767px]:max-w-[420px] leading-[100%]">
                 {image.title}
               </h4>
             </div>

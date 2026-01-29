@@ -8,6 +8,8 @@ import Image from 'next/image'
 import { amenityIcons } from '@/lib/constants/amenity-icons'
 import CabinGallery from '@/components/cabin/CabinGallery'
 import ProcessedHTML from '@/components/content/ProcessedHTML'
+import YouTubeVideoEmbed from '@/components/cabin/YouTubeVideoEmbed'
+import AvailabilityCalendar from '@/components/cabin/AvailabilityCalendar'
 
 interface PageProps {
   params: {
@@ -40,11 +42,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       }
     }
 
-    const metaTitle = cabin.meta_title || cabin.title
-    const metaDescription = cabin.meta_description ||
-      (cabin.body_summary ? stripHtmlTags(cabin.body_summary) :
-        cabin.body ? stripHtmlTags(cabin.body).substring(0, 160) :
-          `Book ${cabin.title} - Cabin Rentals of Georgia`)
+    const metaTitle = cabin.title
+    const metaDescription = cabin.body
+      ? stripHtmlTags(cabin.body).substring(0, 160)
+      : `Book ${cabin.title} - Cabin Rentals of Georgia`
 
     return {
       title: `${metaTitle} | Cabin Rentals of Georgia`,
@@ -83,15 +84,53 @@ const PropertyFeatures = ({ cabin, className }: { cabin: Cabin, className: strin
   return (
     <div className={className}>
       <h3 className="text-[20px] text-[#533e27] font-normal my-[15px] leading-[15px] mt-[30px]">Property Features</h3>
-      <ul className="list-disc list-inside space-y-2 text-[#533e27]">
+      <ul className="!list-none space-y-2 text-[#533e27] !p-0">
         {cabin.features?.map((feature, index) => (
-          <li key={index}>{feature}</li>
+          <li key={index} className='pl-[30px] bg-[url("/images/bullet_star.png")] bg-[5px_4px] bg-no-repeat'>{feature}</li>
         ))}
       </ul>
     </div>
   )
 }
 
+
+const RatesContent = ({ cabin }: { cabin: Cabin }) => {
+  return (
+    <div className='flex flex-col p-[30px_15px_20px_15px] bg-[url("/images/cabin_separator.png")] bg-[center_top] bg-no-repeat'>
+      <span className='text-[130%]'>Rates</span>
+      <p className="text-[#533e27] text-[100%] max-[1010px]:text-[115%] leading-[100%]">
+        {(() => {
+          const text = cabin.rates_description;
+          // Split by double newline or look for the pattern where second paragraph starts
+          const parts = text?.split(/\n\n+/);
+          if (parts?.length && parts?.length >= 2) {
+            // If split by double newline, join with <br><br>
+            return (
+              <>
+                {parts?.[0]}
+                <br /><br />
+                {parts?.slice(1).join('\n\n')}
+              </>
+            );
+          }
+          // Fallback: try to split by "Please contact us" pattern
+          const contactIndex = text?.indexOf('Please contact us');
+          if (contactIndex && contactIndex > 0) {
+            return (
+              <>
+                {text?.substring(0, contactIndex).trim()}
+                <br /><br />
+                {text?.substring(contactIndex).trim()}
+              </>
+            );
+          }
+          // If no clear split, just render as is
+          return text?.trim();
+        })()}
+      </p>
+    </div>
+  )
+}
 /**
  * Cabin content component
  * 
@@ -122,8 +161,8 @@ async function CabinContent({ slug }: { slug: string[] }) {
               src={cabin.featured_image_url.replace("/sites/default/files/", "/images/styles/cabin_featured_main2/public/")}
               alt={cabin.featured_image_alt || cabin.title}
               title={cabin.featured_image_title || undefined}
-              width={cabin.featured_image_width || 800}
-              height={cabin.featured_image_height || 600}
+              width={800}
+              height={600}
               className="w-full h-auto p-[3px]"
               priority
               style={{ boxShadow: '0 0 10px #333' }}
@@ -132,17 +171,23 @@ async function CabinContent({ slug }: { slug: string[] }) {
           </div>
         )}
 
-        <div className='flex items-center justify-between pl-[20px] max-[767px]:justify-center'>
+        <div className='flex items-start justify-between pl-[20px] max-[767px]:justify-center'>
           {/* Cabin Title */}
           <h1 className="font-normal italic text-[42px] max-[1010px]:text-[36px] text-[#7c2c00] leading-[100%] my-[15px] mx-0 leading-[100%]">
-            <em>{cabin.title}</em>
+            {cabin.title}
+            <br />
+            <span className='text-[80%]'>
+              {cabin.address?.city}
+              {cabin.address?.city && cabin.address?.state && ', '}
+              {cabin.address?.state}
+            </span>
           </h1>
-          <button className="bg-[url('/images/icon_save_favorite5.png')] bg-center bg-no-repeat w-[100px] h-[30px] text-white text-[110%] max-[767px]:hidden" />
+          <button className="bg-[url('/images/icon_save_favorite5.png')] bg-center bg-no-repeat mt-[10px] w-[100px] h-[30px] text-white text-[110%] max-[767px]:hidden" />
         </div>
 
         <div className='flex flex-col gap-[5px] p-[0px_0px_20px_20px] bg-[url("/images/cabin_separator.png")] bg-[center_bottom] bg-no-repeat max-[1010px]:w-[53%] max-[767px]:w-[100%] max-[767px]:text-center'>
           {/* Property Listings */}
-          <div className='text-[#5333e27] text-[21px] max-[1010px]:text-[17.28px] italic leading-[100%]'>
+          <div className='text-[#5333e27] text-[21px] max-[1010px]:text-[17.28px] italic max-w-[360px]'>
             {cabin.property_type && cabin.property_type.length > 0 && Array.isArray(cabin.property_type) && (
               <>
                 {cabin.property_type.map(item => item.name).join(', ')}
@@ -160,10 +205,6 @@ async function CabinContent({ slug }: { slug: string[] }) {
             {cabin.sleeps && (
               <span> ~ Sleeps {cabin.sleeps}</span>
             )}
-          </div>
-          {/* Daily rate */}
-          <div className="text-[#533e27] text-[21px] max-[1010px]:text-[17.28px] italic leading-[100%]">
-            from ${cabin.minimum_rate || 0}/night (view daily rates)
           </div>
           {/* Amenities */}
           {cabin.amenities && cabin.amenities.length > 0 && (
@@ -184,7 +225,7 @@ async function CabinContent({ slug }: { slug: string[] }) {
         </div>
 
         <div className='flex items-start justify-between max-[1010px]:justify-end max-[767px]:justify-center'>
-          <div className='flex flex-col w-[62%] hidden min-[1010px]:block'>
+          <div className='flex flex-col w-[62%] hidden min-[1010px]:block pl-[20px]'>
             {/* Body Content */}
             <CabinBody
               cabin={cabin}
@@ -192,7 +233,7 @@ async function CabinContent({ slug }: { slug: string[] }) {
             />
             <PropertyFeatures
               cabin={cabin}
-              className=''
+              className='block min-[1010px]:hidden'
             />
           </div>
 
@@ -236,6 +277,54 @@ async function CabinContent({ slug }: { slug: string[] }) {
           />
         </div>
 
+
+        {/* Daily rate - removed minimum_rate field */}
+        {cabin.rates_description && (
+          <RatesContent cabin={cabin} />
+        )}
+
+        {/* Availability Calendar */}
+        <div className="mb-8">
+          <h3 className="text-[130%] mb-4 bg-[url('/images/cabin_separator.png')] bg-[center_top] bg-no-repeat mt-0 p-[35px_0px_5px] text-[#533e27]">
+            Availability Calendar
+          </h3>
+          <AvailabilityCalendar
+            cabinId={cabin.id}
+            months={12}
+            showRates={true}
+            className="px-[10px]"
+          />
+        </div>
+
+        {/* Videos */}
+        {cabin.video && cabin.video.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-[130%] mb-4 bg-[url('/images/cabin_separator.png')] bg-[center_top] bg-no-repeat mt-0 p-[35px_0px_5px] text-[#533e27]">Videos</h3>
+            <div className="space-y-6 px-[10px]">
+              {cabin.video.map((video: any, index: number) => {
+                // Use video_url if available, otherwise try embed_code
+                const videoUrl = video.video_url || video.embed_code || ''
+
+                if (!videoUrl) {
+                  return null
+                }
+
+                return (
+                  <YouTubeVideoEmbed
+                    key={index}
+                    url={videoUrl}
+                    title={video.title}
+                    description={video.description}
+                    width={560}
+                    height={315}
+                    className="mb-6"
+                  />
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Gallery Images */}
         {cabin.gallery_images && cabin.gallery_images.length > 0 && (
           <CabinGallery
@@ -243,24 +332,6 @@ async function CabinContent({ slug }: { slug: string[] }) {
             cabinTitle={cabin.title}
             cabinInfo={`${cabin.bedrooms || ''}, ${cabin.bathrooms || ''}${cabin.sleeps ? ` ~ Sleeps ${cabin.sleeps}` : ''}`}
           />
-        )}
-
-        {/* Location */}
-        {(cabin.city || cabin.state || cabin.address) && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-[#7c2c00]">Location</h2>
-            <div className="text-[#533e27]">
-              {cabin.address && <p>{cabin.address}</p>}
-              {(cabin.city || cabin.state) && (
-                <p>
-                  {cabin.city}
-                  {cabin.city && cabin.state && ', '}
-                  {cabin.state}
-                  {cabin.zip_code && ` ${cabin.zip_code}`}
-                </p>
-              )}
-            </div>
-          </div>
         )}
       </div>
     )
