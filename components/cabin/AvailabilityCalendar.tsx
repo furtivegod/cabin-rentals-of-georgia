@@ -108,13 +108,13 @@ export default function AvailabilityCalendar({
       </div>
 
       {/* Calendar Viewport with Slider */}
-      <div 
+      <div
         ref={viewportRef}
-        className="cal-viewport w-full max-w-[600px] mx-auto relative" 
+        className="cal-viewport w-full max-w-[600px] max-[1010px]:max-w-[440px] mx-auto relative"
         style={{ overflow: 'hidden', position: 'relative' }}
       >
         {/* Calendar Month Container - Image Slider Style */}
-        <div 
+        <div
           className="cal-viewport-inner flex transition-transform duration-700 ease-in-out"
           style={{
             transform: `translateX(-${currentMonthIndex * (100 / calendar.months.length)}%)`,
@@ -125,7 +125,7 @@ export default function AvailabilityCalendar({
             <div
               key={`${month.year}-${month.month}`}
               className="cal-month flex-shrink-0"
-              style={{ 
+              style={{
                 width: `${100 / calendar.months.length}%`,
                 flexShrink: 0,
               }}
@@ -140,12 +140,12 @@ export default function AvailabilityCalendar({
         </div>
 
         {/* Navigation Buttons */}
-        <div className="cal-buttons flex justify-between mt-4 w-full max-w-[600px] mx-auto">
+        <div className="cal-buttons flex justify-between mt-4 w-full max-w-[600px] mx-auto mb-[5px]">
           <button
             type="button"
             onClick={handlePreviousMonth}
             disabled={currentMonthIndex === 0}
-            className="cal-backward bg-[url('/images/bg_search_repeat.png')] bg-repeat-x border-none rounded-[15px] text-white text-xl px-4 py-1 italic font-['Fanwood_Text',serif] shadow-[0px_1px_3px_#999] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+            className="cal-backward bg-[url('/images/bg_search_repeat.png')] bg-repeat-x border-none rounded-[15px] text-white text-xl px-4 italic font-['Fanwood_Text',serif] shadow-[0px_1px_3px_#999] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
             style={{
               textShadow: '0px 0px 3px #999',
             }}
@@ -156,7 +156,7 @@ export default function AvailabilityCalendar({
             type="button"
             onClick={handleNextMonth}
             disabled={currentMonthIndex >= calendar.months.length - 1}
-            className="cal-forward bg-[url('/images/bg_search_repeat.png')] bg-repeat-x border-none rounded-[15px] text-white text-xl px-4 py-1 italic font-['Fanwood_Text',serif] shadow-[0px_1px_3px_#999] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+            className="cal-forward bg-[url('/images/bg_search_repeat.png')] bg-repeat-x border-none rounded-[15px] text-white text-xl px-4 italic font-['Fanwood_Text',serif] shadow-[0px_1px_3px_#999] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
             style={{
               textShadow: '0px 0px 3px #999',
             }}
@@ -199,7 +199,7 @@ function CalendarMonthComponent({
 
   // Create array of days
   const days: Array<{ date: number; dateStr: string; availability?: any; rate?: any; isAdjacentMonth?: boolean }> = []
-  
+
   // Helper function to find rate from any month
   const findRateForDate = (dateStr: string): any => {
     // First check current month
@@ -273,18 +273,18 @@ function CalendarMonthComponent({
   }
 
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-console.log(days)
+  
   return (
     <div className="calendar-month">
-      <h4 className="text-xl font-semibold text-[#533e27] mb-4 text-center">{monthName}</h4>
-      <div className="calendar-grid overflow-hidden">
+      <h4 className="text-xl ext-black mb-2 text-center mt-[5px]">{monthName}</h4>
+      <div className="overflow-hidden border border-[1px] border-black">
         <table className="w-full border-collapse" style={{ maxWidth: '600px' }}>
           <thead>
             <tr>
               {dayNames.map(day => (
                 <th
                   key={day}
-                  className="border border-[#7c2c00] p-2 text-center text-[#533e27] font-semibold bg-[#f5f5f5] text-sm"
+                  className="p-2 text-center text-[#533e27] font-semibold bg-transparent text-sm"
                 >
                   {day}
                 </th>
@@ -300,7 +300,7 @@ console.log(days)
                     return (
                       <td
                         key={dayIndex}
-                        className="border border-[#7c2c00] p-2 bg-gray-100"
+                        className="border-none p-2 bg-gray-100"
                       />
                     )
                   }
@@ -314,27 +314,27 @@ console.log(days)
                   const availability = day.availability
                   const rate = day.rate
                   const isAdjacentMonth = day.isAdjacentMonth || false
-                  
+
                   // Get CSS class from availability state
                   // If no availability record exists, it means the date is available
                   const cssClass = availability?.state?.css_class || 'cal-available'
-                  
+
                   // Get background image based on CSS class - using _85px versions
                   // Always check availability state first, regardless of adjacent month or past date
                   let bgImage = '/images/calendar_images/cal_available_85px.png' // Default: Available
-                  
+
                   // Match background images from the highlighted _85px versions
                   // Check all possible CSS class values from the database
                   switch (cssClass) {
                     case 'cal-available':
                     case 'cal-av':
-                      bgImage = '/images/calendar_images/cal_available_85px.png'
+                      bgImage = '/images/calendar_images/cal_available_85px2.png'
                       break
                     case 'cal-in':
-                      bgImage = '/images/calendar_images/cal_in_85px.png'
+                      bgImage = '/images/calendar_images/cal_in_85px2.png'
                       break
                     case 'cal-out':
-                      bgImage = '/images/calendar_images/cal_out_85px.png'
+                      bgImage = '/images/calendar_images/cal_out_85px2.png'
                       break
                     case 'cal-inout':
                       bgImage = '/images/calendar_images/cal_inout_85px.png'
@@ -349,9 +349,8 @@ console.log(days)
                       break
                     default:
                       // Default to available
-                      bgImage = '/images/calendar_images/cal_available_85px.png'
+                      bgImage = '/images/calendar_images/cal_available_85px2.png'
                   }
-                  console.log(day.dateStr, bgImage, cssClass)
                   // Set opacity based on date status (but keep the correct background image)
                   let cellOpacity = 1
                   if (isAdjacentMonth) {
@@ -359,31 +358,24 @@ console.log(days)
                   } else if (isPast && !isAdjacentMonth) {
                     cellOpacity = 0.6
                   }
-                  
+
                   const borderColor = 'border-gray-300'
                   return (
                     <td
                       key={dayIndex}
-                      className={`border-2 ${borderColor} ${isToday ? 'ring-2 ring-yellow-400' : ''} p-2 text-center relative max-[767px]:min-w-[44px] max-[767px]:h-[49px]`}
+                      className={`border-none ${isToday ? 'ring-2 ring-yellow-400' : ''} p-2 max-[1010px]:p-1 text-center relative min-w-[85px] h-[85px] max-[1010px]:min-w-[44px] max-[1010px]:h-[49px] align-bottom bg-cover bg-center bg-no-repeat`}
                       style={{
-                        minWidth: '85px',
-                        height: '85px',
-                        verticalAlign: 'bottom',
-                        position: 'relative',
-                        backgroundImage: `url(${bgImage})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: 'transparent', // Ensure no background color overrides the image
+                        backgroundImage: isAdjacentMonth ? 'none' : `url(${bgImage})`,
+                        backgroundColor: 'transparent',
                         opacity: cellOpacity,
                       }}
                     >
-                      <div className="flex flex-col h-full justify-between items-center p-1">
-                        <div className={`text-sm font-semibold max-[767px]:text-xs ${isAdjacentMonth ? 'text-gray-400' : 'text-[#533e27]'}`}>
+                      <div className="h-full flex flex-col align-between">
+                        <p className='text-right text-black text-[14px] !font-bold font-[Arial,Helvetica,sans-serif] !m-0'>
                           {day.date}
-                        </div>
+                        </p>
                         {showRates && rate && (
-                          <div className={`text-xs font-bold mt-auto text-center ${isAdjacentMonth ? 'text-gray-400' : 'text-[#533e27]'}`}>
+                          <div className={`text-black mt-auto text-center font-[Arial,Helvetica,sans-serif] mb-[10px] max-[1010px]:mb-[2px]`}>
                             ${Math.round(rate.daily_rate)}
                           </div>
                         )}

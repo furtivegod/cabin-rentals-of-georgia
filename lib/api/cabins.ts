@@ -54,6 +54,7 @@ export interface Cabin {
   created_at: string
   updated_at: string | null
   published_at: string | null
+  today_rate: number | null
 }
 
 /**

@@ -206,6 +206,14 @@ async function CabinContent({ slug }: { slug: string[] }) {
               <span> ~ Sleeps {cabin.sleeps}</span>
             )}
           </div>
+
+          {/* Today's Rate */}
+          <div className="text-[#533e27] text-[21px] max-[1010px]:text-[17.28px] italic leading-[100%]">
+            {cabin.today_rate && (
+              <span>from ${Math.round(cabin.today_rate)} (view daily rates)</span>
+            )}
+          </div>
+
           {/* Amenities */}
           {cabin.amenities && cabin.amenities.length > 0 && (
             <div className="flex flex-wrap gap-[5px] mt-[5px] items-center max-[767px]:justify-center">
@@ -277,12 +285,6 @@ async function CabinContent({ slug }: { slug: string[] }) {
           />
         </div>
 
-
-        {/* Daily rate - removed minimum_rate field */}
-        {cabin.rates_description && (
-          <RatesContent cabin={cabin} />
-        )}
-
         {/* Availability Calendar */}
         <div className="mb-8">
           <h3 className="text-[130%] mb-4 bg-[url('/images/cabin_separator.png')] bg-[center_top] bg-no-repeat mt-0 p-[35px_0px_5px] text-[#533e27]">
@@ -292,9 +294,13 @@ async function CabinContent({ slug }: { slug: string[] }) {
             cabinId={cabin.id}
             months={12}
             showRates={true}
-            className="px-[10px]"
           />
         </div>
+
+        {/* Daily rate - removed minimum_rate field */}
+        {cabin.rates_description && (
+          <RatesContent cabin={cabin} />
+        )}
 
         {/* Videos */}
         {cabin.video && cabin.video.length > 0 && (

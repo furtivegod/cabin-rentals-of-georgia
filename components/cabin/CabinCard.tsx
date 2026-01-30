@@ -61,11 +61,12 @@ export default function CabinCard({ property }: CabinCardProps) {
           <div className="-mt-2 text-[110%] text-[#533e27]">
             Sleeps {property?.sleeps}
           </div>
-          {/* Minimum Rate */}
-          <div className="-mt-2 text-[110%] text-[#533e27]">
-            {/* {property.rate} */}
-            from ${property?.minimum_rate || 0}/night
-          </div>
+          {/* Daily Rate */}
+          {property.today_rate && (
+            <div className="-mt-2 text-[110%] text-[#533e27]">
+              from ${Math.round(property.today_rate)}/night
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-center">
           <button
