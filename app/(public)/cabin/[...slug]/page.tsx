@@ -286,7 +286,7 @@ async function CabinContent({ slug }: { slug: string[] }) {
         {/* Availability Calendar */}
         <div className="mb-8">
           <h3 className="text-[130%] mb-4 bg-[url('/images/cabin_separator.png')] bg-[center_top] bg-no-repeat mt-0 p-[35px_0px_5px] text-[#533e27]">
-            Availability Calendar
+            Availability
           </h3>
           <AvailabilityCalendar
             cabinId={cabin.id}

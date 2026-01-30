@@ -14,7 +14,7 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 30000,
+      timeout: 60000, // Increased to 60 seconds for calendar queries
     })
 
     // Request interceptor

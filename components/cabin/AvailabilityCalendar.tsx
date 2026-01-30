@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { getCabinCalendar, CabinCalendar, CalendarMonth } from '@/lib/api/calendar'
 
 interface AvailabilityCalendarProps {
@@ -24,6 +24,7 @@ export default function AvailabilityCalendar({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
+  const viewportRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     async function fetchCalendar() {
@@ -87,51 +88,51 @@ export default function AvailabilityCalendar({
   return (
     <div className={`availability-calendar ${className}`}>
       {/* Calendar Key/Legend */}
-      <div className="cal-key mb-4 flex flex-wrap gap-4 max-[767px]:justify-center">
+      <div className="cal-key mb-4 flex flex-wrap gap-4 justify-start">
         {/* Show legend in specific order matching the design */}
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded border-2 bg-green-100 border-green-300" />
-          <span className="text-[#533e27] text-sm">Available</span>
+          <span className="text-[#533e27] text-sm pl-[25px] bg-[url('/images/calendar_images/cal_available3.png')] bg-no-repeat bg-[left_center] bg-contain">Available</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded border-2 bg-blue-100 border-blue-300" />
-          <span className="text-[#533e27] text-sm">Check In</span>
+          <span className="text-[#533e27] text-sm pl-[25px] bg-[url('/images/calendar_images/cal_in3.png')] bg-no-repeat bg-[left_center] bg-contain">Check In</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded border-2 bg-yellow-100 border-yellow-300" />
-          <span className="text-[#533e27] text-sm">Check Out</span>
+          <span className="text-[#533e27] text-sm pl-[25px] bg-[url('/images/calendar_images/cal_out3.png')] bg-no-repeat bg-[left_center] bg-contain">Check Out</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded border-2 bg-orange-100 border-orange-300" />
-          <span className="text-[#533e27] text-sm">Turn-Around Date (Reserved)</span>
+          <span className="text-[#533e27] text-sm pl-[25px] bg-[url('/images/calendar_images/cal_inout3.png')] bg-no-repeat bg-[left_center] bg-contain">Turn-Around Date</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded border-2 bg-pink-100 border-pink-300" />
-          <span className="text-[#533e27] text-sm">Reserved</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded border-2 bg-red-100 border-red-300" />
-          <span className="text-[#533e27] text-sm">Fully booked</span>
+          <span className="text-[#533e27] text-sm pl-[25px] bg-[url('/images/calendar_images/cal_booked3.png')] bg-no-repeat bg-[left_center] bg-contain">Reserved</span>
         </div>
       </div>
 
       {/* Calendar Viewport with Slider */}
-      <div className="cal-viewport w-full max-w-[600px] mx-auto relative overflow-hidden">
-        {/* Calendar Month Container */}
+      <div 
+        ref={viewportRef}
+        className="cal-viewport w-full max-w-[600px] mx-auto relative" 
+        style={{ overflow: 'hidden', position: 'relative' }}
+      >
+        {/* Calendar Month Container - Image Slider Style */}
         <div 
-          className="cal-viewport-inner transition-transform duration-300 ease-in-out flex"
+          className="cal-viewport-inner flex transition-transform duration-700 ease-in-out"
           style={{
-            transform: `translateX(-${currentMonthIndex * 100}%)`,
+            transform: `translateX(-${currentMonthIndex * (100 / calendar.months.length)}%)`,
             width: `${calendar.months.length * 100}%`,
           }}
         >
           {calendar.months.map((month, index) => (
             <div
               key={`${month.year}-${month.month}`}
-              className="cal-month flex-shrink-0 w-full"
+              className="cal-month flex-shrink-0"
+              style={{ 
+                width: `${100 / calendar.months.length}%`,
+                flexShrink: 0,
+              }}
             >
               <CalendarMonthComponent
                 month={month}
+                allMonths={calendar.months}
                 showRates={showRates}
               />
             </div>
@@ -173,9 +174,11 @@ export default function AvailabilityCalendar({
  */
 function CalendarMonthComponent({
   month,
+  allMonths,
   showRates,
 }: {
   month: CalendarMonth
+  allMonths: CalendarMonth[]
   showRates: boolean
 }) {
   const monthName = new Date(month.year, month.month - 1, 1).toLocaleString('default', { month: 'long', year: 'numeric' })
@@ -184,15 +187,63 @@ function CalendarMonthComponent({
   const daysInMonth = lastDay.getDate()
   const startingDayOfWeek = firstDay.getDay() // 0 = Sunday, 1 = Monday, etc.
 
+  // Calculate previous month's last days
+  const prevMonth = month.month === 1 ? 12 : month.month - 1
+  const prevYear = month.month === 1 ? month.year - 1 : month.year
+  const prevMonthLastDay = new Date(prevYear, prevMonth, 0)
+  const prevMonthDays = prevMonthLastDay.getDate()
+
+  // Calculate next month info
+  const nextMonth = month.month === 12 ? 1 : month.month + 1
+  const nextYear = month.month === 12 ? month.year + 1 : month.year
+
   // Create array of days
-  const days: Array<{ date: number; dateStr: string; availability?: any; rate?: any }> = []
+  const days: Array<{ date: number; dateStr: string; availability?: any; rate?: any; isAdjacentMonth?: boolean }> = []
   
-  // Add empty cells for days before month starts
-  for (let i = 0; i < startingDayOfWeek; i++) {
-    days.push({ date: 0, dateStr: '' })
+  // Helper function to find rate from any month
+  const findRateForDate = (dateStr: string): any => {
+    // First check current month
+    if (month.rates[dateStr]) {
+      return month.rates[dateStr]
+    }
+    // Then check all other months
+    for (const m of allMonths) {
+      if (m.rates[dateStr]) {
+        return m.rates[dateStr]
+      }
+    }
+    return null
   }
 
-  // Add days of the month
+  // Helper function to find availability from any month
+  const findAvailabilityForDate = (dateStr: string): any => {
+    // First check current month
+    if (month.availability[dateStr]) {
+      return month.availability[dateStr]
+    }
+    // Then check all other months
+    for (const m of allMonths) {
+      if (m.availability[dateStr]) {
+        return m.availability[dateStr]
+      }
+    }
+    return null
+  }
+
+  // Add previous month's days for empty cells at the start
+  for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+    const prevDate = prevMonthDays - i
+    const dateStr = `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(prevDate).padStart(2, '0')}`
+    days.push({
+      date: prevDate,
+      dateStr,
+      availability: findAvailabilityForDate(dateStr),
+      rate: findRateForDate(dateStr),
+      isAdjacentMonth: true,
+    })
+  }
+
+  // Add days of the current month
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${month.year}-${String(month.month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
     days.push({
@@ -200,11 +251,29 @@ function CalendarMonthComponent({
       dateStr,
       availability: month.availability[dateStr],
       rate: month.rates[dateStr],
+      isAdjacentMonth: false,
     })
   }
 
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  // Calculate how many cells are needed to complete the last row
+  const totalCells = days.length
+  const remainingCells = 7 - (totalCells % 7)
+  if (remainingCells < 7) {
+    // Add next month's days for empty cells at the end
+    for (let day = 1; day <= remainingCells; day++) {
+      const dateStr = `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+      days.push({
+        date: day,
+        dateStr,
+        availability: findAvailabilityForDate(dateStr),
+        rate: findRateForDate(dateStr),
+        isAdjacentMonth: true,
+      })
+    }
+  }
 
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+console.log(days)
   return (
     <div className="calendar-month">
       <h4 className="text-xl font-semibold text-[#533e27] mb-4 text-center">{monthName}</h4>
@@ -227,7 +296,7 @@ function CalendarMonthComponent({
               <tr key={weekIndex}>
                 {Array.from({ length: 7 }).map((_, dayIndex) => {
                   const day = days[weekIndex * 7 + dayIndex]
-                  if (!day || day.date === 0) {
+                  if (!day) {
                     return (
                       <td
                         key={dayIndex}
@@ -244,73 +313,77 @@ function CalendarMonthComponent({
                   const isPast = dayDate < today
                   const availability = day.availability
                   const rate = day.rate
+                  const isAdjacentMonth = day.isAdjacentMonth || false
                   
                   // Get CSS class from availability state
                   // If no availability record exists, it means the date is available
                   const cssClass = availability?.state?.css_class || 'cal-available'
-                  // Get background color and border based on CSS class
-                  // Match exact colors from the legend image
-                  let bgColor = 'bg-green-100' // Default: Available (light green)
-                  let borderColor = 'border-green-300'
                   
-                  if (isPast) {
-                    bgColor = 'bg-gray-200'
-                    borderColor = 'border-gray-400'
-                  } else if (isToday) {
-                    bgColor = 'bg-yellow-50'
-                    borderColor = 'border-yellow-400'
-                  } else {
-                    // Match exact colors from legend
-                    switch (cssClass) {
-                      case 'cal-available':
-                      case 'cal-av':
-                        bgColor = 'bg-green-100'
-                        borderColor = 'border-green-300'
-                        break
-                      case 'cal-in':
-                        bgColor = 'bg-blue-100'
-                        borderColor = 'border-blue-300'
-                        break
-                      case 'cal-out':
-                        bgColor = 'bg-yellow-100'
-                        borderColor = 'border-yellow-300'
-                        break
-                      case 'cal-inout':
-                        bgColor = 'bg-orange-100'
-                        borderColor = 'border-orange-300'
-                        break
-                      case 'cal-booked':
-                        bgColor = 'bg-pink-100'
-                        borderColor = 'border-pink-300'
-                        break
-                      case 'cal-na':
-                        bgColor = 'bg-red-100'
-                        borderColor = 'border-red-300'
-                        break
-                      default:
-                        // Default to available (green)
-                        bgColor = 'bg-green-100'
-                        borderColor = 'border-green-300'
-                    }
+                  // Get background image based on CSS class - using _85px versions
+                  // Always check availability state first, regardless of adjacent month or past date
+                  let bgImage = '/images/calendar_images/cal_available_85px.png' // Default: Available
+                  
+                  // Match background images from the highlighted _85px versions
+                  // Check all possible CSS class values from the database
+                  switch (cssClass) {
+                    case 'cal-available':
+                    case 'cal-av':
+                      bgImage = '/images/calendar_images/cal_available_85px.png'
+                      break
+                    case 'cal-in':
+                      bgImage = '/images/calendar_images/cal_in_85px.png'
+                      break
+                    case 'cal-out':
+                      bgImage = '/images/calendar_images/cal_out_85px.png'
+                      break
+                    case 'cal-inout':
+                      bgImage = '/images/calendar_images/cal_inout_85px.png'
+                      break
+                    case 'cal-booked':
+                    case 'cal-opt': // Provisionally booked
+                      bgImage = '/images/calendar_images/cal_booked_85px.png'
+                      break
+                    case 'cal-na': // Fully booked
+                    case 'cal-nc': // Not communicated
+                      bgImage = '/images/calendar_images/cal_booked_85px.png'
+                      break
+                    default:
+                      // Default to available
+                      bgImage = '/images/calendar_images/cal_available_85px.png'
                   }
-
+                  console.log(day.dateStr, bgImage, cssClass)
+                  // Set opacity based on date status (but keep the correct background image)
+                  let cellOpacity = 1
+                  if (isAdjacentMonth) {
+                    cellOpacity = 0.5
+                  } else if (isPast && !isAdjacentMonth) {
+                    cellOpacity = 0.6
+                  }
+                  
+                  const borderColor = 'border-gray-300'
                   return (
                     <td
                       key={dayIndex}
-                      className={`border-2 ${borderColor} ${bgColor} ${isPast ? 'opacity-60' : ''} ${isToday ? 'ring-2 ring-yellow-400' : ''} p-2 text-center relative max-[767px]:min-w-[44px] max-[767px]:h-[49px]`}
+                      className={`border-2 ${borderColor} ${isToday ? 'ring-2 ring-yellow-400' : ''} p-2 text-center relative max-[767px]:min-w-[44px] max-[767px]:h-[49px]`}
                       style={{
                         minWidth: '85px',
                         height: '85px',
                         verticalAlign: 'bottom',
                         position: 'relative',
+                        backgroundImage: `url(${bgImage})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundColor: 'transparent', // Ensure no background color overrides the image
+                        opacity: cellOpacity,
                       }}
                     >
                       <div className="flex flex-col h-full justify-between items-center p-1">
-                        <div className="text-sm font-semibold text-[#533e27] max-[767px]:text-xs">
+                        <div className={`text-sm font-semibold max-[767px]:text-xs ${isAdjacentMonth ? 'text-gray-400' : 'text-[#533e27]'}`}>
                           {day.date}
                         </div>
                         {showRates && rate && (
-                          <div className="text-xs font-bold text-[#533e27] mt-auto text-center max-[767px]:hidden">
+                          <div className={`text-xs font-bold mt-auto text-center ${isAdjacentMonth ? 'text-gray-400' : 'text-[#533e27]'}`}>
                             ${Math.round(rate.daily_rate)}
                           </div>
                         )}
