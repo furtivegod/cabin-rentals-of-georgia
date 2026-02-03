@@ -28,37 +28,6 @@ export default function CabinCard({ property }: CabinCardProps) {
     >
       {/* Property Image */}
       <div className="relative">
-        {/* Favorite heart icon on image */}
-        <button
-          onClick={handleFavoriteClick}
-          className="absolute top-2 left-2 z-10 w-8 h-8 flex items-center justify-center"
-          title={isPropertyFavorite ? 'Remove from comparison' : 'Add to comparison'}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            className={`w-7 h-7 transition-all ${isPropertyFavorite ? 'fill-red-600 stroke-red-600' : 'fill-white/50 stroke-red-600'}`}
-            strokeWidth="2"
-          >
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        </button>
-
-        {/* Add to compare icon */}
-        <button
-          onClick={handleFavoriteClick}
-          className="absolute top-2 left-11 z-10 w-8 h-8 flex items-center justify-center"
-          title={isPropertyFavorite ? 'Remove from comparison' : 'Add to comparison'}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            className={`w-6 h-6 transition-all ${isPropertyFavorite ? 'fill-green-600 stroke-green-600' : 'fill-white/50 stroke-green-700'}`}
-            strokeWidth="2"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 8v8M8 12h8" stroke="white" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
-
         {/* Wide Image */}
         <div className="block">
           <Link href={`/cabin/${property.cabin_slug}`}>
