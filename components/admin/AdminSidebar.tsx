@@ -287,9 +287,9 @@ export default function AdminSidebar() {
     children?.some((child) => pathname === child.href)
 
   return (
-    <aside className="w-64 min-h-screen bg-slate-900 text-slate-300 flex flex-col">
+    <aside className="w-64 h-screen bg-slate-900 text-slate-300 flex flex-col flex-shrink-0">
       {/* Logo/Brand */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-700">
+      <div className="h-16 flex items-center px-6 border-b border-slate-700 flex-shrink-0">
         <Link href="/admin" className="flex items-center gap-3">
           <div className="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">CR</span>
@@ -301,8 +301,8 @@ export default function AdminSidebar() {
         </Link>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3">
+      {/* Navigation - scrollbar only visible on hover */}
+      <nav className="admin-sidebar-nav flex-1 overflow-y-auto py-4 px-3">
         {menuSections.map((section) => (
           <div key={section.title} className="mb-6">
             <h3 className="px-3 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -385,7 +385,7 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-slate-700">
+      <div className="p-4 border-t border-slate-700 flex-shrink-0">
         <Link
           href="/"
           target="_blank"

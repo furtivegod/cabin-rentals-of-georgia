@@ -7,7 +7,7 @@ export default function ConditionalSidebar() {
   const pathname = usePathname()
   
   // Hide sidebar if URL contains "blue-ridge-property-management"
-  if (pathname?.includes('blue-ridge-property-management')) {
+  if (pathname?.includes('blue-ridge-property-management') || pathname?.includes('compare')) {
     return null
   }
   

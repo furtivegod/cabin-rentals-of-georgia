@@ -13,9 +13,9 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex min-h-screen bg-slate-100 font-sans" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+    <div className="flex h-screen overflow-hidden bg-slate-100 font-sans" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
       <AdminSidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
         <AdminHeader />
         <main className="flex-1 p-6 overflow-auto">
           {children}

@@ -222,3 +222,59 @@ img {
     opacity: 1;
   }
 }
+
+/* Admin Sidebar Scrollbar - Hidden by default, visible on hover with smooth transition */
+.admin-sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.admin-sidebar-nav:hover {
+  scrollbar-color: #475569 transparent;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+.admin-sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.admin-sidebar-nav:hover::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.admin-sidebar-nav:hover::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Hide scrollbar arrows/buttons completely */
+.admin-sidebar-nav::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-button:start:decrement,
+.admin-sidebar-nav::-webkit-scrollbar-button:end:increment {
+  display: none;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-button:vertical:start:increment,
+.admin-sidebar-nav::-webkit-scrollbar-button:vertical:end:decrement {
+  display: none;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-corner {
+  background: transparent;
+}
