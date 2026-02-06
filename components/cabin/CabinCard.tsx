@@ -81,8 +81,8 @@ export default function CabinCard({ property }: CabinCardProps) {
             onClick={handleFavoriteClick}
             className={`bg-center bg-no-repeat w-[100px] h-[30px] text-white text-[110%] transition-opacity ${
               isPropertyFavorite 
-                ? "bg-[url('/images/icon_save_favorite5.png')] opacity-100" 
-                : "bg-[url('/images/icon_save_favorite5.png')] opacity-70 hover:opacity-100"
+                ? "bg-[url('/images/icon_remove_favorite5.png')]" 
+                : "bg-[url('/images/icon_save_favorite5.png')]"
             }`}
             title={isPropertyFavorite ? 'Remove from comparison' : 'Add to comparison'}
           />

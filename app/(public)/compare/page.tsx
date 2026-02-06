@@ -25,19 +25,19 @@ export default function ComparePage() {
   return (
     <div className="p-4 md:p-8">
       <h1 className="text-[#7c2c00] text-3xl italic font-serif mb-6">Cabin Comparison</h1>
-      
+
       <div className="overflow-x-auto">
         <table className="w-full border-separate border-spacing-0 table-fixed">
           <tbody>
             {/* Cabin Names Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`name-${property.id}`} 
+                <td
+                  key={`name-${property.id}`}
                   className={`p-4 text-center align-top border-b w-[250px] border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
-                  <Link 
-                    href={`/cabin/${property.cabin_slug}`} 
+                  <Link
+                    href={`/cabin/${property.cabin_slug}`}
                     className="text-[#7c2c00] underline text-lg font-medium"
                   >
                     {property.title}
@@ -49,19 +49,33 @@ export default function ComparePage() {
             {/* Images Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`image-${property.id}`} 
+                <td
+                  key={`image-${property.id}`}
                   className={`p-4 text-center align-top border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   <div className="relative inline-block">
 
+                    <button
+                      onClick={() => toggleFavorite(property)}
+                      className="absolute -top-[9px] -left-[10px] z-10 flex items-center justify-center"
+                      title="Remove from comparison"
+                    >
+                      <Image 
+                        src='/images/icon_remove_favorite5.png'
+                        alt='Remove from comparison'
+                        width={35}
+                        height={35}
+                        className='cursor-pointer object-contain mx-auto w-[35px] h-auto'
+                      />
+                    </button>
+
                     <Link href={`/cabin/${property.cabin_slug}`}>
                       <Image
-                        src={property?.featured_image_url?.replace("/sites/default/files/", "/images/styles/cabins_listing_large2/public/") || ''}
+                        src={property?.featured_image_url?.replace("/sites/default/files/", "/images/styles/cabin_favorite/public/") || ''}
                         alt={`${property?.title || ''} | Cabin Rentals of Georgia`}
-                        width={300}
+                        width={250}
                         height={200}
-                        className="w-[280px] h-auto"
+                        className="w-[230px] h-auto"
                       />
                     </Link>
                   </div>
@@ -72,8 +86,8 @@ export default function ComparePage() {
             {/* Instant Quote Button Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`quote-${property.id}`} 
+                <td
+                  key={`quote-${property.id}`}
                   className={`p-4 text-center align-middle border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   <Link href={`/cabin/${property.cabin_slug}`}>
@@ -92,8 +106,8 @@ export default function ComparePage() {
             {/* Bedrooms Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`bedrooms-${property.id}`} 
+                <td
+                  key={`bedrooms-${property.id}`}
                   className={`p-3 text-center text-[#533e27] border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   {property.bedrooms}
@@ -104,8 +118,8 @@ export default function ComparePage() {
             {/* Bathrooms Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`bathrooms-${property.id}`} 
+                <td
+                  key={`bathrooms-${property.id}`}
                   className={`p-3 text-center text-[#533e27] border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   {property.bathrooms} Bath
@@ -116,8 +130,8 @@ export default function ComparePage() {
             {/* Sleeps Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`sleeps-${property.id}`} 
+                <td
+                  key={`sleeps-${property.id}`}
                   className={`p-3 text-center text-[#533e27] border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   Sleeps {property.sleeps}
@@ -128,8 +142,8 @@ export default function ComparePage() {
             {/* Price Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`price-${property.id}`} 
+                <td
+                  key={`price-${property.id}`}
                   className={`p-3 text-center text-[#533e27] border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   {property.today_rate ? `from $${Math.round(property.today_rate)}/night` : 'Contact for rates'}
@@ -140,8 +154,8 @@ export default function ComparePage() {
             {/* Amenities Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`amenities-${property.id}`} 
+                <td
+                  key={`amenities-${property.id}`}
                   className={`p-4 text-center border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   <div className="flex justify-center items-center gap-1 flex-wrap">
@@ -164,37 +178,20 @@ export default function ComparePage() {
             {/* Description Row */}
             <tr>
               {favorites.map((property, index) => (
-                <td 
-                  key={`desc-${property.id}`} 
-                  className={`p-4 text-[#533e27] text-sm leading-relaxed align-top border-b border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
+                <td
+                  key={`desc-${property.id}`}
+                  className={`p-4 text-[#533e27] text-sm leading-relaxed align-top  border-[#a08060] ${index > 0 ? 'border-l' : ''}`}
                 >
                   {property.body ? (
-                    <div 
+                    <div
                       className="line-clamp-[8]"
-                      dangerouslySetInnerHTML={{ 
-                        __html: property.body.replace(/<[^>]*>/g, '').substring(0, 400) + '...' 
-                      }} 
+                      dangerouslySetInnerHTML={{
+                        __html: property.body.replace(/<[^>]*>/g, '').substring(0, 400) + '...'
+                      }}
                     />
                   ) : (
                     <p>{property.tagline || 'No description available.'}</p>
                   )}
-                </td>
-              ))}
-            </tr>
-
-            {/* Remove Button Row */}
-            <tr>
-              {favorites.map((property, index) => (
-                <td 
-                  key={`remove-${property.id}`} 
-                  className={`p-4 text-center ${index > 0 ? 'border-l border-[#a08060]' : ''}`}
-                >
-                  <button
-                    onClick={() => removeFavorite(property.id)}
-                    className="text-red-700 hover:text-red-900 text-sm underline"
-                  >
-                    Remove from comparison
-                  </button>
                 </td>
               ))}
             </tr>

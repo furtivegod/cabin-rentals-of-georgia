@@ -5,6 +5,7 @@ import { getCabinBySlug, Cabin } from '@/lib/api/cabins'
 import { cleanHtmlContent, stripHtmlTags } from '@/lib/utils/html-utils'
 import PageLoading from '@/components/ui/PageLoading'
 import Image from 'next/image'
+import Link from 'next/link'
 import { amenityIcons } from '@/lib/constants/amenity-icons'
 import CabinGallery from '@/components/cabin/CabinGallery'
 import ProcessedHTML from '@/components/content/ProcessedHTML'
@@ -247,6 +248,7 @@ async function CabinContent({ slug }: { slug: string[] }) {
 
           {/* Right Side Content */}
           <div className='flex flex-col w-[38%] flex-shrink-0 -mt-[140px] max-[1010px]:w-[50%] max-[1010px]:-mt-[170px] max-[767px]:mt-0'>
+            <Link href={`/reservations/book/${cabin.id}`}>
             <Image
               src='/images/btn_instant_quote_small.png'
               alt='Instant Quote'
@@ -254,7 +256,8 @@ async function CabinContent({ slug }: { slug: string[] }) {
               height={196}
               className='cursor-pointer p-[3px] object-contain mx-auto'
             />
-            <span className='text-[19px] text-center text-[#7c2c00] hover:[#b7714b] leading-[100%] cursor-pointer italic underline mt-[5px]'>Detailed Price</span>
+            </Link>
+            <Link href={`/reservations/book/${cabin.id}`} className='text-[19px] text-center text-[#7c2c00] hover:text-[#b7714b] leading-[100%] cursor-pointer italic underline mt-[5px]'>Detailed Price</Link>
             <span className='text-[14px] mb-[10px] text-center'>Available to reserve online 24/7</span>
             <Image
               src={`https://maps.googleapis.com/maps/api/staticmap?center=${cabin.latitude},${cabin.longitude}&zoom=15&size=190x190&maptype=roadmap&markers=size:small%7Ccolor:red%7C${cabin.latitude},${cabin.longitude}&scale=2&format=png32&key=AIzaSyD0ozy1aDQV-n8bQBm3gMaaiyw499-zsug`}

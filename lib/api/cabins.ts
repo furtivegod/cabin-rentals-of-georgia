@@ -57,6 +57,58 @@ export interface Cabin {
   today_rate: number | null
 }
 
+// Admin API types
+export interface AdminCabinListParams {
+  page?: number
+  page_size?: number
+  status?: string
+  search?: string
+  bedrooms?: string
+  sort_by?: string
+  sort_order?: 'asc' | 'desc'
+}
+
+export interface AdminCabinListResponse {
+  cabins: Cabin[]
+  total: number
+  page: number
+  page_size: number
+  total_pages: number
+}
+
+/**
+ * Fetch cabins for admin panel with pagination and filtering
+ */
+export async function getAdminCabins(params?: AdminCabinListParams): Promise<AdminCabinListResponse> {
+  const response = await apiClient.get<AdminCabinListResponse>('/api/v1/admin/cabins', {
+    params,
+  })
+  return response.data
+}
+
+/**
+ * Delete a cabin by ID
+ */
+export async function deleteCabin(cabinId: string): Promise<{ message: string; id: string }> {
+  const response = await apiClient.delete<{ message: string; id: string }>(`/api/v1/admin/cabins/${cabinId}`)
+  return response.data
+}
+
+/**
+ * Update a cabin's status
+ */
+export async function updateCabinStatus(
+  cabinId: string,
+  newStatus: 'published' | 'draft' | 'archived'
+): Promise<{ message: string; id: string }> {
+  const response = await apiClient.patch<{ message: string; id: string }>(
+    `/api/v1/admin/cabins/${cabinId}/status`,
+    null,
+    { params: { new_status: newStatus } }
+  )
+  return response.data
+}
+
 /**
  * Fetch a single cabin by slug (tries both slug and cabin_slug)
  * 
@@ -112,4 +164,65 @@ export interface PropertyListParams {
 export async function getAllCabins(): Promise<Property[]> {
   const response = await apiClient.get<PropertyListResponse>('/api/v1/cabins/getAllCabins')
   return response.data.properties
+}
+
+// Cabin create/update types
+export interface CabinCreateData {
+  title: string
+  cabin_slug?: string
+  body?: string
+  tagline?: string
+  bedrooms?: string
+  bathrooms?: string
+  sleeps?: number
+  property_type?: Array<{ tid: number; name: string }>
+  amenities?: Array<{ tid: number; name: string }>
+  features?: string[]
+  featured_image_url?: string
+  featured_image_alt?: string
+  featured_image_title?: string
+  gallery_images?: any[]
+  latitude?: number
+  longitude?: number
+  streamline_id?: number
+  phone?: string
+  matterport_url?: string
+  location?: number
+  rates_description?: string
+  video?: Array<{ video_url?: string; thumbnail_path?: string; embed_code?: string; description?: string }>
+  address?: {
+    country?: string
+    address1?: string
+    address2?: string
+    city?: string
+    state?: string
+    zip_code?: string
+  }
+  status?: 'published' | 'draft' | 'archived'
+}
+
+export type CabinUpdateData = Partial<CabinCreateData>
+
+/**
+ * Create a new cabin
+ */
+export async function createCabin(data: CabinCreateData): Promise<Cabin> {
+  const response = await apiClient.post<Cabin>('/api/v1/admin/cabins', data)
+  return response.data
+}
+
+/**
+ * Update an existing cabin
+ */
+export async function updateCabin(cabinId: string, data: CabinUpdateData): Promise<Cabin> {
+  const response = await apiClient.put<Cabin>(`/api/v1/admin/cabins/${cabinId}`, data)
+  return response.data
+}
+
+/**
+ * Get a single cabin by ID for admin (includes all statuses)
+ */
+export async function getAdminCabinById(cabinId: string): Promise<Cabin> {
+  const response = await apiClient.get<Cabin>(`/api/v1/admin/cabins/${cabinId}`)
+  return response.data
 }

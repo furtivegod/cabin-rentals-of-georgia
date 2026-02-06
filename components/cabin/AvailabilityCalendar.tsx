@@ -8,6 +8,7 @@ interface AvailabilityCalendarProps {
   months?: number
   showRates?: boolean
   className?: string
+  visibleMonths?: number // How many months to show at once (default 1)
 }
 
 /**
@@ -19,6 +20,7 @@ export default function AvailabilityCalendar({
   months = 3,
   showRates = true,
   className = '',
+  visibleMonths = 1,
 }: AvailabilityCalendarProps) {
   const [calendar, setCalendar] = useState<CabinCalendar | null>(null)
   const [loading, setLoading] = useState(true)
@@ -48,12 +50,13 @@ export default function AvailabilityCalendar({
   }, [cabinId, months, showRates])
 
   const handlePreviousMonth = () => {
-    setCurrentMonthIndex(prev => Math.max(0, prev - 1))
+    setCurrentMonthIndex(prev => Math.max(0, prev - visibleMonths))
   }
 
   const handleNextMonth = () => {
     if (calendar) {
-      setCurrentMonthIndex(prev => Math.min(calendar.months.length - 1, prev + 1))
+      const maxIndex = Math.max(0, calendar.months.length - visibleMonths)
+      setCurrentMonthIndex(prev => Math.min(maxIndex, prev + visibleMonths))
     }
   }
 
@@ -110,21 +113,21 @@ export default function AvailabilityCalendar({
       {/* Calendar Viewport with Slider */}
       <div
         ref={viewportRef}
-        className="cal-viewport w-full max-w-[600px] max-[1010px]:max-w-[440px] mx-auto relative"
+        className={`cal-viewport w-full mx-auto relative ${visibleMonths === 1 ? 'max-w-[600px] max-[1010px]:max-w-[440px]' : ''}`}
         style={{ overflow: 'hidden', position: 'relative' }}
       >
         {/* Calendar Month Container - Image Slider Style */}
         <div
           className="cal-viewport-inner flex transition-transform duration-700 ease-in-out"
           style={{
-            transform: `translateX(-${currentMonthIndex * (100 / calendar.months.length)}%)`,
-            width: `${calendar.months.length * 100}%`,
+            transform: `translateX(-${(currentMonthIndex / calendar.months.length) * 100}%)`,
+            width: `${(calendar.months.length / visibleMonths) * 100}%`,
           }}
         >
           {calendar.months.map((month, index) => (
             <div
               key={`${month.year}-${month.month}`}
-              className="cal-month flex-shrink-0"
+              className="cal-month flex-shrink-0 px-1"
               style={{
                 width: `${100 / calendar.months.length}%`,
                 flexShrink: 0,
@@ -134,13 +137,14 @@ export default function AvailabilityCalendar({
                 month={month}
                 allMonths={calendar.months}
                 showRates={showRates}
+                compact={visibleMonths > 1}
               />
             </div>
           ))}
         </div>
 
         {/* Navigation Buttons */}
-        <div className="cal-buttons flex justify-between mt-4 w-full max-w-[600px] mx-auto mb-[5px]">
+        <div className={`cal-buttons flex justify-between mt-4 w-full mx-auto mb-[5px] ${visibleMonths === 1 ? 'max-w-[600px]' : ''}`}>
           <button
             type="button"
             onClick={handlePreviousMonth}
@@ -150,18 +154,18 @@ export default function AvailabilityCalendar({
               textShadow: '0px 0px 3px #999',
             }}
           >
-            Previous month
+            Previous
           </button>
           <button
             type="button"
             onClick={handleNextMonth}
-            disabled={currentMonthIndex >= calendar.months.length - 1}
+            disabled={currentMonthIndex >= calendar.months.length - visibleMonths}
             className="cal-forward bg-[url('/images/bg_search_repeat.png')] bg-repeat-x border-none rounded-[15px] text-white text-xl px-4 italic font-['Fanwood_Text',serif] shadow-[0px_1px_3px_#999] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
             style={{
               textShadow: '0px 0px 3px #999',
             }}
           >
-            Next month
+            Next
           </button>
         </div>
       </div>
@@ -176,10 +180,12 @@ function CalendarMonthComponent({
   month,
   allMonths,
   showRates,
+  compact = false,
 }: {
   month: CalendarMonth
   allMonths: CalendarMonth[]
   showRates: boolean
+  compact?: boolean
 }) {
   const monthName = new Date(month.year, month.month - 1, 1).toLocaleString('default', { month: 'long', year: 'numeric' })
   const firstDay = new Date(month.year, month.month - 1, 1)
@@ -255,36 +261,121 @@ function CalendarMonthComponent({
     })
   }
 
-  // Calculate how many cells are needed to complete the last row
-  const totalCells = days.length
-  const remainingCells = 7 - (totalCells % 7)
-  if (remainingCells < 7) {
-    // Add next month's days for empty cells at the end
-    for (let day = 1; day <= remainingCells; day++) {
-      const dateStr = `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-      days.push({
-        date: day,
-        dateStr,
-        availability: findAvailabilityForDate(dateStr),
-        rate: findRateForDate(dateStr),
-        isAdjacentMonth: true,
-      })
-    }
+  // Ensure we always have 6 rows (42 cells) for consistent height across all months
+  // Fill remaining cells with next month's days
+  let nextMonthDay = 1
+  while (days.length < 42) {
+    const dateStr = `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(nextMonthDay).padStart(2, '0')}`
+    days.push({
+      date: nextMonthDay,
+      dateStr,
+      availability: findAvailabilityForDate(dateStr),
+      rate: findRateForDate(dateStr),
+      isAdjacentMonth: true,
+    })
+    nextMonthDay++
   }
 
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   
+  // For compact mode, use CSS Grid with gaps
+  if (compact) {
+    return (
+      <div className="calendar-month h-full">
+        <h4 className="text-black mb-2 text-center text-sm">{monthName}</h4>
+        <div className="overflow-hidden border border-black">
+          {/* Day names header */}
+          <div className="grid grid-cols-7 gap-[2px] mb-[2px]">
+            {dayNames.map(day => (
+              <div
+                key={day}
+                className="text-center text-[#533e27] font-semibold text-[10px] py-1"
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+          {/* Days grid */}
+          <div className="grid grid-cols-7 gap-[2px]">
+            {days.map((day, index) => {
+              const today = new Date()
+              today.setHours(0, 0, 0, 0)
+              const dayDate = new Date(day.dateStr)
+              dayDate.setHours(0, 0, 0, 0)
+              const isToday = day.dateStr === today.toISOString().split('T')[0]
+              const isPast = dayDate < today
+              const availability = day.availability
+              const isAdjacentMonth = day.isAdjacentMonth || false
+
+              const cssClass = availability?.state?.css_class || 'cal-available'
+              let bgImage = '/images/calendar_images/cal_available_85px2.png'
+
+              switch (cssClass) {
+                case 'cal-available':
+                case 'cal-av':
+                  bgImage = '/images/calendar_images/cal_available_85px2.png'
+                  break
+                case 'cal-in':
+                  bgImage = '/images/calendar_images/cal_in_85px2.png'
+                  break
+                case 'cal-out':
+                  bgImage = '/images/calendar_images/cal_out_85px2.png'
+                  break
+                case 'cal-inout':
+                  bgImage = '/images/calendar_images/cal_inout_85px.png'
+                  break
+                case 'cal-booked':
+                case 'cal-opt':
+                  bgImage = '/images/calendar_images/cal_booked_85px.png'
+                  break
+                case 'cal-na':
+                case 'cal-nc':
+                  bgImage = '/images/calendar_images/cal_booked_85px.png'
+                  break
+                default:
+                  bgImage = '/images/calendar_images/cal_available_85px2.png'
+              }
+
+              let cellOpacity = 1
+              if (isAdjacentMonth) {
+                cellOpacity = 0.4
+              } else if (isPast && !isAdjacentMonth) {
+                cellOpacity = 0.6
+              }
+
+              return (
+                <div
+                  key={index}
+                  className={`aspect-square flex items-center justify-center bg-cover bg-center bg-no-repeat ${isToday ? 'ring-2 ring-yellow-400' : ''}`}
+                  style={{
+                    backgroundImage: isAdjacentMonth ? 'none' : `url(${bgImage})`,
+                    opacity: cellOpacity,
+                  }}
+                >
+                  <span className="text-black font-bold text-[11px] font-[Arial,Helvetica,sans-serif]">
+                    {day.date}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Original table layout for non-compact mode
   return (
     <div className="calendar-month">
-      <h4 className="text-xl ext-black mb-2 text-center mt-[5px]">{monthName}</h4>
+      <h4 className="text-black mb-2 text-center mt-[5px] text-xl">{monthName}</h4>
       <div className="overflow-hidden border border-[1px] border-black">
-        <table className="w-full border-collapse" style={{ maxWidth: '600px' }}>
+        <table className="w-full border-collapse table-fixed">
           <thead>
             <tr>
               {dayNames.map(day => (
                 <th
                   key={day}
-                  className="p-2 text-center text-[#533e27] font-semibold bg-transparent text-sm"
+                  className="text-center text-[#533e27] font-semibold bg-transparent p-2 text-sm"
                 >
                   {day}
                 </th>
@@ -300,7 +391,7 @@ function CalendarMonthComponent({
                     return (
                       <td
                         key={dayIndex}
-                        className="border-none p-2 bg-gray-100"
+                        className="border-none p-0 bg-gray-100 aspect-square"
                       />
                     )
                   }
@@ -315,16 +406,9 @@ function CalendarMonthComponent({
                   const rate = day.rate
                   const isAdjacentMonth = day.isAdjacentMonth || false
 
-                  // Get CSS class from availability state
-                  // If no availability record exists, it means the date is available
                   const cssClass = availability?.state?.css_class || 'cal-available'
+                  let bgImage = '/images/calendar_images/cal_available_85px.png'
 
-                  // Get background image based on CSS class - using _85px versions
-                  // Always check availability state first, regardless of adjacent month or past date
-                  let bgImage = '/images/calendar_images/cal_available_85px.png' // Default: Available
-
-                  // Match background images from the highlighted _85px versions
-                  // Check all possible CSS class values from the database
                   switch (cssClass) {
                     case 'cal-available':
                     case 'cal-av':
@@ -340,18 +424,17 @@ function CalendarMonthComponent({
                       bgImage = '/images/calendar_images/cal_inout_85px.png'
                       break
                     case 'cal-booked':
-                    case 'cal-opt': // Provisionally booked
+                    case 'cal-opt':
                       bgImage = '/images/calendar_images/cal_booked_85px.png'
                       break
-                    case 'cal-na': // Fully booked
-                    case 'cal-nc': // Not communicated
+                    case 'cal-na':
+                    case 'cal-nc':
                       bgImage = '/images/calendar_images/cal_booked_85px.png'
                       break
                     default:
-                      // Default to available
                       bgImage = '/images/calendar_images/cal_available_85px2.png'
                   }
-                  // Set opacity based on date status (but keep the correct background image)
+
                   let cellOpacity = 1
                   if (isAdjacentMonth) {
                     cellOpacity = 0.5
@@ -359,23 +442,22 @@ function CalendarMonthComponent({
                     cellOpacity = 0.6
                   }
 
-                  const borderColor = 'border-gray-300'
                   return (
                     <td
                       key={dayIndex}
-                      className={`border-none ${isToday ? 'ring-2 ring-yellow-400' : ''} p-2 max-[1010px]:p-1 text-center relative min-w-[85px] h-[85px] max-[1010px]:min-w-[44px] max-[1010px]:h-[49px] align-bottom bg-cover bg-center bg-no-repeat`}
+                      className={`border-none ${isToday ? 'ring-2 ring-yellow-400' : ''} text-center relative bg-cover bg-center bg-no-repeat aspect-square p-2 max-[1010px]:p-1`}
                       style={{
                         backgroundImage: isAdjacentMonth ? 'none' : `url(${bgImage})`,
                         backgroundColor: 'transparent',
                         opacity: cellOpacity,
                       }}
                     >
-                      <div className="h-full flex flex-col align-between">
-                        <p className='text-right text-black text-[14px] !font-bold font-[Arial,Helvetica,sans-serif] !m-0'>
+                      <div className="h-full flex flex-col justify-between">
+                        <p className="text-black !font-bold font-[Arial,Helvetica,sans-serif] !m-0 text-[14px] text-right">
                           {day.date}
                         </p>
                         {showRates && rate && (
-                          <div className={`text-black mt-auto text-center font-[Arial,Helvetica,sans-serif] mb-[10px] max-[1010px]:mb-[2px]`}>
+                          <div className="text-black mt-auto text-center font-[Arial,Helvetica,sans-serif] mb-[10px] max-[1010px]:mb-[2px]">
                             ${Math.round(rate.daily_rate)}
                           </div>
                         )}
