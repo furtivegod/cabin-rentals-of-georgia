@@ -59,7 +59,7 @@ export default function GalleryImagesList({
     const updated = [...images]
     updated[index] = {
       ...updated[index],
-      alt: alt.trim(),
+      alt: alt,
     }
     onChange(updated)
   }
@@ -68,7 +68,7 @@ export default function GalleryImagesList({
     const updated = [...images]
     updated[index] = {
       ...updated[index],
-      title: title.trim(),
+      title: title,
     }
     onChange(updated)
   }

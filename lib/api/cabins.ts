@@ -187,7 +187,7 @@ export interface CabinCreateData {
   streamline_id?: number
   phone?: string
   matterport_url?: string
-  location?: number
+  location?: string | number
   rates_description?: string
   video?: Array<{ video_url?: string; thumbnail_path?: string; embed_code?: string; description?: string }>
   address?: {

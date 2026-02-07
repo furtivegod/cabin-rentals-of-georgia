@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { createCabin, CabinCreateData } from '@/lib/api/cabins'
+import { updateCabin, getAdminCabinById, CabinUpdateData, Cabin } from '@/lib/api/cabins'
 import {
   getBedroomOptions,
   getBathroomOptions,
@@ -186,7 +186,7 @@ function CheckboxGroup({
   )
 }
 
-// Dynamic list input for features with editing and reordering
+// Features list component with drag/drop and inline editing
 function FeaturesList({
   features,
   onChange,
@@ -616,10 +616,14 @@ function generateSlug(city: string, title: string): string {
   }
 }
 
-export default function AddNewCabinPage() {
+export default function EditCabinPage() {
   const router = useRouter()
+  const params = useParams()
+  const cabinId = params?.id as string
+
   const [activeTab, setActiveTab] = useState<TabId>('basic')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
@@ -646,7 +650,7 @@ export default function AddNewCabinPage() {
     address1: '',
     address2: '',
     city: '',
-    state: 'GA',
+    state: '',
     zip_code: '',
     latitude: '',
     longitude: '',
@@ -669,36 +673,91 @@ export default function AddNewCabinPage() {
   })
 
   // Auto-generate slug from city/title
-  const [autoSlug, setAutoSlug] = useState(true)
+  const [autoSlug, setAutoSlug] = useState(false)
 
+  // Load cabin data and taxonomy options
   useEffect(() => {
-    if (autoSlug && (formData.city || formData.title)) {
-      setFormData((prev) => ({ ...prev, cabin_slug: generateSlug(prev.city, prev.title) }))
-    }
-  }, [formData.city, formData.title, autoSlug])
+    async function loadData() {
+      if (!cabinId) return
 
-  // Load taxonomy options
-  useEffect(() => {
-    async function loadOptions() {
       try {
-        const [bedrooms, bathrooms, propertyTypes, amenities] = await Promise.all([
+        setIsLoading(true)
+        setError(null)
+
+        // Load cabin data and taxonomy options in parallel
+        const [cabin, bedrooms, bathrooms, propertyTypes, amenities] = await Promise.all([
+          getAdminCabinById(cabinId),
           getBedroomOptions(),
           getBathroomOptions(),
           getPropertyTypeOptions(),
           getAmenityOptions(),
         ])
+
+        // Set taxonomy options
         setBedroomOptions(bedrooms)
         setBathroomOptions(bathrooms)
         setPropertyTypeOptions(propertyTypes)
         setAmenityOptions(amenities)
-      } catch (err) {
-        console.error('Failed to load taxonomy options:', err)
+
+        // Transform cabin data to form data
+        setFormData({
+          title: cabin.title || '',
+          cabin_slug: cabin.cabin_slug || '',
+          tagline: cabin.tagline || '',
+          body: cabin.body || '',
+          bedrooms: cabin.bedrooms || '',
+          bathrooms: cabin.bathrooms || '',
+          sleeps: cabin.sleeps?.toString() || '',
+          location: cabin.address?.country || cabin.location?.toString() || 'US',
+          address1: cabin.address?.address1 || '',
+          address2: cabin.address?.address2 || '',
+          city: cabin.address?.city || '',
+          state: cabin.address?.state || '',
+          zip_code: cabin.address?.zip_code || '',
+          latitude: cabin.latitude?.toString() || '',
+          longitude: cabin.longitude?.toString() || '',
+          property_type: Array.isArray(cabin.property_type) ? cabin.property_type : [],
+          amenities: Array.isArray(cabin.amenities) ? cabin.amenities : [],
+          features: Array.isArray(cabin.features) ? cabin.features : [],
+          featured_image_url: cabin.featured_image_url || '',
+          featured_image_alt: cabin.featured_image_alt || '',
+          featured_image_title: cabin.featured_image_title || '',
+          matterport_url: cabin.matterport_url || '',
+          video_urls: Array.isArray(cabin.video) 
+            ? cabin.video.map((v: any) => v.video_url || '').filter(Boolean)
+            : [],
+          gallery_images: Array.isArray(cabin.gallery_images) 
+            ? cabin.gallery_images.map((img: any) => ({
+                url: typeof img === 'string' ? img : img.url || '',
+                alt: typeof img === 'object' ? img.alt || '' : '',
+                title: typeof img === 'object' ? img.title || '' : '',
+              }))
+            : [],
+          streamline_id: cabin.streamline_id?.toString() || '',
+          phone: cabin.phone || '',
+          rates_description: cabin.rates_description || '',
+          status: (cabin.status as 'published' | 'draft' | 'archived') || 'draft',
+        })
+
+        // Don't auto-generate slug for existing cabins
+        setAutoSlug(false)
+      } catch (err: any) {
+        setError(err.response?.data?.detail || err.message || 'Failed to load cabin data')
       } finally {
+        setIsLoading(false)
         setLoadingOptions(false)
       }
     }
-    loadOptions()
-  }, [])
+
+    loadData()
+  }, [cabinId])
+
+  // Auto-generate slug from city/title (only if autoSlug is enabled)
+  useEffect(() => {
+    if (autoSlug && (formData.city || formData.title)) {
+      setFormData((prev) => ({ ...prev, cabin_slug: generateSlug(prev.city, prev.title) }))
+    }
+  }, [formData.city, formData.title, autoSlug])
 
   const updateField = <K extends keyof typeof formData>(field: K, value: typeof formData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -766,7 +825,7 @@ export default function AddNewCabinPage() {
     setError(null)
 
     try {
-      const cabinData: CabinCreateData = {
+      const cabinData: CabinUpdateData = {
         title: formData.title.trim(),
         cabin_slug: formData.cabin_slug.trim() || undefined,
         tagline: formData.tagline.trim() || undefined,
@@ -806,15 +865,15 @@ export default function AddNewCabinPage() {
         status: formData.status,
       }
 
-      const cabin = await createCabin(cabinData)
-      setSuccessMessage(`Cabin "${cabin.title}" created successfully!`)
+      const cabin = await updateCabin(cabinId, cabinData)
+      setSuccessMessage(`Cabin "${cabin.title}" updated successfully!`)
 
       // Redirect after a short delay
       setTimeout(() => {
         router.push('/admin/cabins')
       }, 1500)
     } catch (err: any) {
-      let errorMessage = 'Failed to create cabin'
+      let errorMessage = 'Failed to update cabin'
       
       if (err.response?.data?.detail) {
         const detail = err.response.data.detail
@@ -843,7 +902,7 @@ export default function AddNewCabinPage() {
     }
   }
 
-  // Tab content renderers
+  // Tab content renderers (same as new page)
   const renderBasicTab = () => (
     <div className="space-y-6">
       <FormField label="Cabin Name" required>
@@ -1140,13 +1199,14 @@ export default function AddNewCabinPage() {
           {(['draft', 'published', 'archived'] as const).map((status) => (
             <label
               key={status}
-              className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${formData.status === status
-                ? status === 'published'
-                  ? 'border-emerald-500 bg-emerald-50'
-                  : status === 'draft'
-                    ? 'border-amber-500 bg-amber-50'
-                    : 'border-slate-500 bg-slate-50'
-                : 'border-slate-200 hover:border-slate-300'
+              className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                formData.status === status
+                  ? status === 'published'
+                    ? 'border-emerald-500 bg-emerald-50'
+                    : status === 'draft'
+                      ? 'border-amber-500 bg-amber-50'
+                      : 'border-slate-500 bg-slate-50'
+                  : 'border-slate-200 hover:border-slate-300'
                 }`}
             >
               <input
@@ -1183,6 +1243,21 @@ export default function AddNewCabinPage() {
       </div>
 
       <div className="border-t border-slate-200 pt-6">
+        <h3 className="text-sm font-semibold text-slate-700 mb-4">External IDs</h3>
+        <div className="space-y-4">
+          <FormField label="Streamline ID" hint="Streamline PMS property ID">
+            <Input
+              type="number"
+              value={formData.streamline_id}
+              onChange={(e) => updateField('streamline_id', e.target.value)}
+              placeholder="e.g., 12345"
+            />
+          </FormField>
+        </div>
+      </div>
+
+      <div className="border-t border-slate-200 pt-6">
+        <h3 className="text-sm font-semibold text-slate-700 mb-4">URL Slug</h3>
         <FormField
           label="URL Slug"
           hint={autoSlug ? 'Auto-generated from city/title. Click the lock to edit manually.' : 'Enter a custom URL slug.'}
@@ -1198,145 +1273,153 @@ export default function AddNewCabinPage() {
             <button
               type="button"
               onClick={() => setAutoSlug(!autoSlug)}
-              className={`px-3 py-2 rounded-lg border transition-colors ${autoSlug
-                ? 'bg-amber-50 border-amber-300 text-amber-700'
-                : 'bg-slate-50 border-slate-300 text-slate-600'
-                }`}
+              className="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
               title={autoSlug ? 'Click to edit manually' : 'Click to auto-generate'}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {autoSlug ? (
+              {autoSlug ? (
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                ) : (
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                )}
-              </svg>
+                </svg>
+              )}
             </button>
           </div>
         </FormField>
       </div>
+
     </div>
   )
 
-  const tabContent: Record<TabId, () => JSX.Element> = {
-    basic: renderBasicTab,
-    details: renderDetailsTab,
-    location: renderLocationTab,
-    features: renderFeaturesTab,
-    media: renderMediaTab,
-    settings: renderSettingsTab,
-  }
-
-  return (
-    <div className="max-w-5xl mx-auto">
-      {/* Success Message */}
-      {successMessage && (
-        <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800 animate-in slide-in-from-top-2">
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            <span className="font-medium">{successMessage}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Page Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-          <Link href="/admin/cabins" className="hover:text-amber-600 transition-colors">
-            Cabins
-          </Link>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-          <span className="text-slate-900">Add New</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Add New Cabin</h1>
-            <p className="text-slate-500 mt-1">Create a new cabin property listing</p>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+            <p className="mt-4 text-slate-600">Loading cabin data...</p>
           </div>
         </div>
       </div>
+    )
+  }
 
-      {/* Error Message */}
-      {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
-          <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="text-red-800">{error}</p>
-          <button onClick={() => setError(null)} className="ml-auto text-red-500 hover:text-red-700">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          {/* Tabs */}
-          <div className="border-b border-slate-200 bg-slate-50">
-            <nav className="flex overflow-x-auto">
-              {TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id
-                    ? 'border-amber-500 text-amber-600 bg-white'
-                    : 'border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={tab.icon} />
-                  </svg>
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
+  return (
+    <div className="min-h-screen bg-slate-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Edit Cabin</h1>
+            <p className="text-slate-600 mt-1">Update cabin information and settings</p>
           </div>
-
-          {/* Tab Content */}
-          <div className="p-6">{tabContent[activeTab]()}</div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex items-center justify-between bg-white rounded-xl shadow-sm border border-slate-200 p-4">
           <Link
             href="/admin/cabins"
             className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium transition-colors"
           >
             Cancel
           </Link>
-          <div className="flex items-center gap-3">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors disabled:opacity-50 flex items-center gap-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Save
-                </>
-              )}
+        </div>
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3">
+            <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-emerald-800">{successMessage}</p>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+            <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-red-800">{error}</p>
+            <button onClick={() => setError(null)} className="ml-auto text-red-500 hover:text-red-700">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-        </div>
-      </form>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            {/* Tabs */}
+            <div className="border-b border-slate-200 bg-slate-50">
+              <div className="flex overflow-x-auto">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2 px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? 'text-amber-600 border-b-2 border-amber-600 bg-white'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
+                    </svg>
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tab Content */}
+            <div className="p-6">
+              {activeTab === 'basic' && renderBasicTab()}
+              {activeTab === 'details' && renderDetailsTab()}
+              {activeTab === 'location' && renderLocationTab()}
+              {activeTab === 'features' && renderFeaturesTab()}
+              {activeTab === 'media' && renderMediaTab()}
+              {activeTab === 'settings' && renderSettingsTab()}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-slate-200 bg-slate-50 px-6 py-4 flex items-center justify-between">
+              <Link
+                href="/admin/cabins"
+                className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium transition-colors"
+              >
+                Cancel
+              </Link>
+              <div className="flex items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-5 py-2.5 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Save
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
+

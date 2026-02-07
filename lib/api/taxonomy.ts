@@ -23,13 +23,14 @@ export const VOCABULARY_IDS = {
   BEDROOMS: 2,
   PROPERTY_TYPE: 3,
   AMENITIES: 4,
-  LOCATIONS: 5,
+  BATHROOMS: 5,
+  LOCATIONS: 6,
 } as const
 
 /**
  * Get all taxonomy terms for a vocabulary by ID
  * 
- * @param vid - Vocabulary ID (2=Bedrooms, 3=Property Type, 4=Amenities, 5=Locations)
+ * @param vid - Vocabulary ID (2=Bedrooms, 3=Property Type, 4=Amenities, 5=Bathrooms, 6=Locations)
  */
 export async function getTermsByVocabulary(vid: number): Promise<TaxonomyTerm[]> {
   const response = await apiClient.get<TaxonomyTermListResponse>(
@@ -57,6 +58,13 @@ export async function getPropertyTypeOptions(): Promise<TaxonomyTerm[]> {
  */
 export async function getAmenityOptions(): Promise<TaxonomyTerm[]> {
   return getTermsByVocabulary(VOCABULARY_IDS.AMENITIES)
+}
+
+/**
+ * Get bathroom options
+ */
+export async function getBathroomOptions(): Promise<TaxonomyTerm[]> {
+  return getTermsByVocabulary(VOCABULARY_IDS.BATHROOMS)
 }
 
 /**
