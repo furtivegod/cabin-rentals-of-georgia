@@ -16,22 +16,50 @@ async function BlueRidgeExperienceContent() {
 
     const activities = await getAllActivities()
     return (
-      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5 block">
         <h1 className="text-4xl mb-8">{title}</h1>
         <ProcessedHTML
           html={term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available'}
-          className="prose prose-lg mx-auto mb-8 block"
+          className="prose prose-lg mx-auto mb-8 "
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 max-[767px]:grid-cols-1 md:grid-cols-2 gap-6">
           {activities.map((activity) => (
-            <div key={activity.id} className="border border-gray-200 rounded-lg overflow-hidden">
-              {activity.featured_image_url && <Image src={activity.featured_image_url} alt={activity.title} width={100} height={100} />}
-              <Link href={`/activity/${activity.activity_slug}`} className="hover:underline">
-                <h2 className="font-normal text-white text-[19px] m-0">{activity.title}</h2>
-              </Link>
-
-              <p className="text-white text-[16px] italic">{activity.activity_type}</p>
-            </div>
+            <Link
+              key={activity.id}
+              href={`/activity/${activity.activity_slug}`}
+              className="block group"
+            >
+              <div className="relative w-full max-[767px]:max-w-[235px] max-[767px]:mx-auto overflow-hidden" style={{ boxShadow: '0px 0px 7px #333' }}>
+                {activity.featured_image_url ? (
+                  <>
+                    <div className="relative">
+                      <Image
+                        src={activity.featured_image_url.replace("/sites/default/files/", "/images/styles/activities_listing/public/")}
+                        alt={activity.title}
+                        width={609}
+                        height={390}
+                        className="w-full h-auto bg-transparent p-[3px]"
+                      />
+                      {/* Text Overlay */}
+                      <div className="absolute flex flex-col justify-end p-4 left-0 bottom-0">
+                        <h3 className="text-white text-[120%] no-underline hover:underline m-0">
+                          {activity.title}
+                        </h3>
+                        <span className="text-white italic text-[110%]">
+                          {activity.activity_type}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="w-full bg-gray-200 flex items-center justify-center p-8">
+                    <p className="text-[#533e27] font-semibold text-center px-4">
+                      {activity.title}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Link>
           ))}
         </div>
       </div>

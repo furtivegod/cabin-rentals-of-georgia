@@ -10,7 +10,7 @@ export interface Activity {
   activity_slug: string | null
   body: string | null
   body_summary: string | null
-  body_format: string | null
+  address: string | null
   activity_type: string | null
   activity_type_tid: number | null
   area: string | null
@@ -23,19 +23,14 @@ export interface Activity {
   difficulty_level_tid: number | null
   season: string | null
   season_tid: number | null
-  featured_image_fid: number | null
   featured_image_url: string | null
   featured_image_alt: string | null
   featured_image_title: string | null
-  featured_image_width: number | null
-  featured_image_height: number | null
   gallery_images: any[] | null
   latitude: number | null
   longitude: number | null
-  author_name: string | null
   status: string
   is_featured: boolean
-  is_sticky: boolean
   display_order: number
   drupal_nid: number | null
   drupal_vid: number | null

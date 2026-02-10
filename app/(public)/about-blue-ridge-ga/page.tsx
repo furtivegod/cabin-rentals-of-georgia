@@ -14,13 +14,13 @@ async function AboutBlueRidgeGAContent() {
     const body = page.body_value || 'No content available'
 
     return (
-      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5 block">
         <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
           <em>{title}</em>
         </h1>
         <ProcessedHTML
           html={cleanHtmlContent(body.replaceAll("https://www.cabin-rentals-of-georgia.com", ""))}
-          className="prose prose-lg max-w-none text-[#533e27] text-[120%] mb-8 block"
+          className="prose prose-lg max-w-none text-[#533e27] mb-8 "
         />
       </div>
     )

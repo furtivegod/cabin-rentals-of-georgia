@@ -84,13 +84,13 @@ export default function PropertyManagementContent() {
     <div className="mb-[-1px] min-h-full mt-0 relative h-auto  align-top">
       {/* Header Section - What is my revenue potential? */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-center">
-        <div className="w-[45%] min-h-[350px] bg-[#372d1f] pl-[70px] pt-[80px] max-[1010px]:min-h-[280px] max-[768px]:w-full max-[768px]:py-[45px] max-[768px]:min-h-[0px]">
-          <h3 className="text-[40px] font-bold text-white mt-0 leading-[40px] max-[1010px]:text-[32px] max-[1010px]:leading-[32px] max-[768px]:text-[30px] max-[768px]:leading-[30px]">
-            What is my <br className="max-[768px]:hidden" />revenue potential?
+        <div className="w-[45%] min-h-[350px] bg-[#372d1f]  pt-[80px] max-[1010px]:min-h-[280px] max-[767px]:w-full max-[767px]:py-[45px] max-[767px]:min-h-[0px]">
+          <h3 className="text-[40px] font-bold text-white mt-0 leading-[40px] max-[1010px]:text-[32px] max-[1010px]:leading-[32px] max-[767px]:text-[30px] max-[767px]:leading-[30px]">
+            What is my <br className="max-[767px]:hidden" />revenue potential?
           </h3>
-          <p className="text-[28px] text-white font-normal max-[1010px]:text-[20px] max-[768px]:text-[19px]">Call (706) 432-2140</p>
+          <p className="text-[28px] text-white font-normal max-[1010px]:text-[20px] max-[767px]:text-[19px]">Call (706) 432-2140</p>
         </div>
-        <div className="w-[55%] min-h-[350px] bg-[url('/images/bg_top_fireplace.jpg')] bg-cover bg-bottom max-[1010px]:min-h-[280px] max-[768px]:hidden"></div>
+        <div className="w-[55%] min-h-[350px] bg-[url('/images/bg_top_fireplace.jpg')] bg-cover bg-bottom max-[1010px]:min-h-[280px] max-[767px]:hidden"></div>
       </div>
 
       {/* What You Get Section */}
@@ -119,7 +119,7 @@ export default function PropertyManagementContent() {
       {/* Maximize Income Section */}
       <div className="p-[35px_25px] bg-[#eae2af] text-[#372d1f]  text-center ">
         <h4 className="text-[32px] italic leading-[32px] m-0 pb-[32px]">Maximize Income with Peace of Mind</h4>
-        <div className="grid grid-cols-4 gap-[40px] pb-[10px] max-[1010px]:gap-[15px] max-[1010px]:grid-cols-2 max-[768px]:grid-cols-1">
+        <div className="grid grid-cols-4 gap-[40px] pb-[10px] max-[1010px]:gap-[15px] max-[1010px]:grid-cols-2 max-[767px]:grid-cols-1">
           <div className="basis-1/4 text-[22px] font-normal">
             <div className="mb-4">
               <Image src="/images/pm_icons/brown/expert_revenue_management_brn.png" alt="" width={50} height={50} className="object-contain mx-auto" />
@@ -171,16 +171,16 @@ export default function PropertyManagementContent() {
       <div className='relative bg-[#f9f9d7] pt-[32px]'>
         <div className="absolute -top-[5px] left-0 w-[100%] bg-[url('/images/scroll_divider.png')] h-[20px] bg-no-repeat bg-center mx-auto bg-[length:95%]"></div>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-[32px]">
-            <div className="w-[45%] min-h-[350px] bg-[#372d1f] mx-auto flex justify-center items-center max-[768px]:w-[100%] max-[768px]:min-h-[280px]">
+            <div className="w-[45%] min-h-[350px] bg-[#372d1f] mx-auto flex justify-center items-center max-[767px]:w-[100%] max-[767px]:min-h-[280px]">
               <div className='max-w-[330px]'>
                 <Image src="/images/gary.png" alt='' width={110} height={110} className='object-contain mx-auto mb-[10px]' />
-                <h3 className="text-[30px] leading-[30px]  italic font-bold text-white text-center m-0 max-[768px]:text-[24px]">
+                <h3 className="text-[30px] leading-[30px]  italic font-bold text-white text-center m-0 max-[767px]:text-[24px]">
                   Schedule a call with Gary to find out more that we can do for you.
                 </h3>
-                <p className="text-[28px] text-white font-normal text-center  max-[768px]:text-[19px]">Call (706) 432-2140</p>
+                <p className="text-[28px] text-white font-normal text-center  max-[767px]:text-[19px]">Call (706) 432-2140</p>
               </div>
             </div>
-            <div className="w-[55%] min-h-[350px] bg-[url('/images/bg_schedule_call.jpg')] bg-cover bg-bottom max-[768px]:hidden"></div>
+            <div className="w-[55%] min-h-[350px] bg-[url('/images/bg_schedule_call.jpg')] bg-cover bg-bottom max-[767px]:hidden"></div>
           </div>
       </div>
 
@@ -272,7 +272,7 @@ export default function PropertyManagementContent() {
           <table className="w-[95%] max-w-[640px] min-h-[185px] mx-auto">
             <tbody>
               <tr>
-                <td className="text-white leading-relaxed italic text-[22px]  max-[768px]:text-[19px]">
+                <td className="text-white leading-relaxed italic text-[22px]  max-[767px]:text-[19px]">
                   {testimonials[currentTestimonial].text}
                 </td>
               </tr>

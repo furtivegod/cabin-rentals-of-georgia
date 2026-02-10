@@ -21,11 +21,13 @@ pre {
 }
 
 .block p {
-  margin: revert; /* Also revert paragraph margin */
+  margin: revert;
+  /* Also revert paragraph margin */
 }
 
 /* Restore default list styles */
-.block ul, ol {
+.block ul,
+ol {
   margin: revert;
   padding-left: revert;
   list-style: revert;
@@ -53,9 +55,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #533e27;
+  font-size: 100%;
+  line-height: 130%;
 }
 
-h1 {
+/* CUSTOM STYLES */
+
+.block h1 {
   font-weight: normal;
   font-style: italic;
   font-size: 220%;
@@ -72,12 +78,56 @@ h1 {
   color: #7c2c00;
 }
 
-.block a, .block a:visited {
+.block h3 {
+  font-size: 130%;
+  font-weight: normal;
+}
+
+.block ul li {
+  margin-bottom: 8px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1010px) {
+  .block h1 {
+    font-size: 210%;
+  }
+
+  .block h2 {
+    font-size: 170%;
+  }
+
+  .block p {
+    font-size: 115%;
+  }
+
+  .memories-content p { font-size: 95%;}
+}
+
+@media only screen and (max-width: 767px) {
+  body {
+    font-size: 90%;
+  }
+
+  .block h1 {
+    padding: 0;
+    width: 100%;
+    margin: 15px auto;
+  }
+
+  .block p {
+    font-size: 130%;
+    line-height: 120%;
+  }
+}
+
+
+.block a,
+.block a:visited {
   color: #7c2c00;
   text-decoration: underline;
 }
 
-/* Pagination styles */
+/* PAGINATION STYLES */
 .pagination {
   font-family: 'Fanwood Text', serif;
   color: #533e27;
@@ -131,6 +181,7 @@ textarea:focus,
 select:focus {
   outline: none;
 }
+
 
 /* Image optimization */
 img {

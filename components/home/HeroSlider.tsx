@@ -55,7 +55,7 @@ export default function HeroSlider() {
 
     const drawOverlay = () => {
       const { width, height } = container.getBoundingClientRect()
-      
+
       // Set canvas size to match container
       canvas.width = width
       canvas.height = height
@@ -97,7 +97,7 @@ export default function HeroSlider() {
     }
 
     window.addEventListener('resize', handleResize)
-    
+
     // Initial draw
     if (overlayImage.complete) {
       drawOverlay()
@@ -134,14 +134,14 @@ export default function HeroSlider() {
             >
               {/* Ken Burns Image Container */}
               <div className="slide-container">
-                  <Image
-                    src={slide.image}
-                    alt={slide.title}
-                    fill
-                    className="object-cover"
-                    priority={index === 0}
-                    sizes="100vw"
-                  />
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                  sizes="100vw"
+                />
               </div>
 
               {/* Gradient Overlay */}
@@ -149,17 +149,15 @@ export default function HeroSlider() {
 
               {/* Captions */}
               <div className="slide-captions max-w-[280px]">
-                <h2 
-                  className={`caption-title ${slide.titleAnimation} ${
-                    index === currentSlide && isAnimating ? 'animate-in' : ''
-                  }`}
+                <h2
+                  className={`max-[767px]:max-w-[210px] max-[767px]:text-[180%] max-[767px]:leading-[90%] caption-title ${slide.titleAnimation} ${index === currentSlide && isAnimating ? 'animate-in' : ''
+                    }`}
                 >
                   {slide.title}
                 </h2>
-                <p 
-                  className={`caption-body ${slide.bodyAnimation} ${
-                    index === currentSlide && isAnimating ? 'animate-in' : ''
-                  }`}
+                <p
+                  className={`max-[767px]:max-w-[210px] max-[767px]:text-[100%] max-[767px]:leading-[110%] caption-body ${slide.bodyAnimation} ${index === currentSlide && isAnimating ? 'animate-in' : ''
+                    }`}
                 >
                   {slide.body}
                 </p>
@@ -190,7 +188,7 @@ export default function HeroSlider() {
 
         @media (max-width: 767px) {
           .hero-slider-wrapper {
-            height: 280px;
+            height: 220px;
           }
         }
 
@@ -319,15 +317,29 @@ export default function HeroSlider() {
 
         @media (max-width: 1010px) {
           .caption-title {
-            font-size: 36px;
+            font-size: 24px;
+            margin-bottom: 8px;
+            background: none;
+            padding-bottom: 0px;
           }
+            .slide-captions{
+              margin-top: 30px;
+              margin-left: 0px;
+              max-width: 280px
+            }
         }
 
         @media (max-width: 767px) {
           .caption-title {
             font-size: 24px;
             margin-bottom: 8px;
+            background: none;
+            padding-bottom: 0px;
           }
+            .slide-captions{
+              margin-top: 30px;
+              margin-left: 40px;
+            }
         }
 
         .caption-body {

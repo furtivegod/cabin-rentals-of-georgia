@@ -65,8 +65,9 @@ export default function PropertySearch() {
           <div className="relative">
             <h2
               onClick={() => setActiveTab('search')}
-              className="text-left italic text-white text-[30px] relative h-[30px] pt-0 inline-block cursor-pointer mt-[16px] mb-[21px] max-[1010px]:text-[150%] max-[1010px]:mt-[12px] max-[1010px]:mb-[15px] max-[767px]:text-[130%] max-[767px]:m-[0px_auto_0px_auto] max-[767px]:text-[#533e27]"
-              style={{ textShadow: '1px 1px 2px #333' }}
+              className={`text-left italic text-white text-[30px] relative h-[30px] pt-[12px] max-[1010px]:pt-[8px] inline-block cursor-pointer mt-[16px] mb-[21px] max-[1010px]:text-[150%] max-[1010px]:mt-[12px] max-[1010px]:mb-[15px] max-[767px]:text-[130%] max-[767px]:m-[0px_auto_0px_auto] max-[767px]:text-[#533e27] ${
+                pathname?.includes('blue-ridge-property-management') ? 'max-[767px]:hidden' : ''
+              }`}
             >
               Search Available Cabins
             </h2>
@@ -75,7 +76,7 @@ export default function PropertySearch() {
               className="absolute top-[5px] left-[371px] max-[1010px]:top-[2px] max-[1010px]:left-[278px]"
             >
               <span
-                className="text-left italic text-white text-[30px] relative h-[30px] pt-0 inline-block cursor-pointer -mt-[2px] max-[1010px]:text-[150%] max-[767px]:hidden"
+                className="text-left italic text-white text-[30px] relative h-[30px] pt-[12px] max-[1010px]:pt-[8px] inline-block cursor-pointer -mt-[2px] max-[1010px]:text-[150%] max-[767px]:hidden"
                 style={{ textShadow: '1px 1px 2px #333' }}
               >
                 Manage Your Property With Us
@@ -129,16 +130,25 @@ export default function PropertySearch() {
                       </div>
                     </div>
                   </div>
+                  
                   <button
                     type="submit"
-                    className="relative italic text-[140%] w-[110px] h-[31px] rounded-[20px] -mt-[3px] bg-[url('/images/bg_search_repeat.png')] bg-repeat-x text-white ml-[10px] p-[1px_6px_1px_6px] max-[1010px]:w-[82px] max-[1010px]:h-[27px] max-[1010px]:text-[110%] max-[1010px]:p-[0px_0px_0px_0px] max-[1010px]:ml-[0px] max-[1010px]:mt-[1px] max-[1010px]:ml-[2px] cursor-pointer border-none"
+                    className="relative italic text-[140%] w-[110px] h-[31px] rounded-[20px] -mt-[3px] bg-[url('/images/bg_search_repeat.png')] bg-repeat-x text-white ml-[10px] p-[1px_6px_1px_6px] max-[1010px]:w-[82px] max-[1010px]:h-[27px] max-[1010px]:text-[110%] max-[1010px]:p-[0px_0px_0px_0px] max-[1010px]:ml-[0px] max-[1010px]:mt-[1px] max-[1010px]:ml-[2px] max-[767px]:order-3 cursor-pointer border-none"
                     style={{ boxShadow: '0px 2px 4px rgba(0,0,0,.3)', lineHeight: '29px'}}
                   >
                     Search
                   </button>
                   <Link
+                    href="/blue-ridge-property-management"
+                    className="hidden max-[767px]:block max-[767px]:order-1 pt-[5px] pb-0 pl-[4px] pr-0 inline-block leading-[90%] text-[#533e27] no-underline font-normal text-[105%] text-right hover:text-[#2f0f00] ml-[7px] max-[1010px]:text-[90%] max-[1010px]:ml-[0px]"
+                    style={{ textShadow: '0 0 1px #533e27' }}
+                    title="Property Management"
+                  >
+                    Property<br />Management
+                  </Link>
+                  <Link
                     href="/availability"
-                    className="pt-[5px] pb-0 pl-[4px] pr-0 inline-block leading-[90%] text-[#533e27] no-underline font-normal text-[105%] text-right bg-[url('/images/master_calendar_checkmark.png')] bg-no-repeat bg-[0px_0px] bg-transparent bg-[length:18px] hover:text-[#2f0f00] ml-[7px] max-[1010px]:text-[90%] max-[1010px]:bg-[length:15px] max-[1010px]:ml-[0px]"
+                    className="pt-[5px] pb-0 pl-[4px] pr-0 inline-block leading-[90%] text-[#533e27] no-underline font-normal text-[105%] text-right bg-[url('/images/master_calendar_checkmark.png')] bg-no-repeat bg-[0px_0px] bg-transparent bg-[length:18px] hover:text-[#2f0f00] ml-[7px] max-[1010px]:text-[90%] max-[1010px]:bg-[length:15px] max-[1010px]:ml-[0px] max-[767px]:order-2"
                     style={{ textShadow: '0 0 1px #533e27' }}
                     title="View a master availability calendar showing all cabins"
                   >
@@ -147,7 +157,7 @@ export default function PropertySearch() {
                 </div>
               </form>
             ) : (
-              <h2 className="text-center italic text-[35px] text-[#533e27] mt-0 max-[1010px]:text-[180%]">
+              <h2 className="text-center italic mt-[15px] text-[35px] text-[#533e27] max-[1010px]:mt-0 max-[1010px]:text-[180%] max-[767px]:mt-[10px] max-[767px]:mb-[10px]">
                 Blue Ridge Property Management
               </h2>
             )}

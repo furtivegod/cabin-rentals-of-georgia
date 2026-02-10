@@ -61,11 +61,11 @@ async function CabinCategoryContent({ category, slug }: { category: string; slug
     }
 
     return (
-      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto align-top block p-[20px]">
         <h1 className="text-4xl mb-0">{title}</h1>
         <ProcessedHTML
           html={term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available'}
-          className="prose prose-lg mx-auto mb-0 block"
+          className="prose prose-lg mx-auto mb-0"
         />
         
         <CabinListing

@@ -34,13 +34,13 @@ async function BlueRidgeMemoriesContent() {
     const title = term.page_title || term.name
 
     return (
-      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
-        <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5 block">
+        <h1 className="font-normal italic text-[#7c2c00] my-[15px] mx-0">
           <em>{title}</em>
         </h1>
         <ProcessedHTML
           html={term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available'}
-          className="prose prose-lg mx-auto mb-8 block"
+          className="prose prose-lg mx-auto mb-8 "
         />
         <div className="flex flex-col">
           {testimonials.length === 0 ? (
@@ -83,7 +83,7 @@ async function BlueRidgeMemoriesContent() {
                   <div className="flex-1 flex flex-col block">
                     {/* Testimonial Title */}
                     {testimonial.title && (
-                      <span className="text-[#533e27] text-[130%] line-height-[120%] ">
+                      <span className="text-[#533e27] text-[130%] leading-[120%]">
                         {testimonial.title}
                       </span>
                     )}
@@ -105,10 +105,10 @@ async function BlueRidgeMemoriesContent() {
                     {testimonial.body ? (
                       <ProcessedHTML
                         html={cleanHtmlContent(testimonial.body)}
-                        className="text-[#533e27] italic leading-relaxed"
+                        className="text-[#533e27] italic memories-content"
                       />
                     ) : testimonial.body_summary ? (
-                      <p className="text-[#533e27] italic leading-relaxed">
+                      <p className="text-[#533e27] italic">
                         {stripHtmlTags(testimonial.body_summary)}
                       </p>
                     ) : null}
@@ -126,11 +126,11 @@ async function BlueRidgeMemoriesContent() {
     return (
       <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <div className="mb-8">
-          <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
+          <h1 className="font-normal italic text-[#7c2c00] my-[15px] mx-0">
             <em>Blue Ridge Memories</em>
           </h1>
           <div className="text-center py-10">
-            <p className="text-[#533e27] text-lg">
+            <p className="text-[#533e27]">
               {error?.response?.status === 404
                 ? 'Page not found. Please check the URL and try again.'
                 : 'Unable to load page content. Please try again later.'}

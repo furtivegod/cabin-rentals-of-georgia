@@ -41,18 +41,18 @@ export default function CabinCard({ property }: CabinCardProps) {
           </Link>
         </div>
 
-        <div className="-mt-[45px] relative float-right text-white bg-[url('/images/bg_camera2.png')] bg-center bg-no-repeat w-[65px] h-[65px] leading-[70px] text-center -right-[15px]">
+        <div className="-mt-[45px] absolute text-white bg-[url('/images/bg_camera2.png')] bg-center bg-no-repeat w-[65px] h-[65px] leading-[70px] text-center -right-[15px]">
           <Link
             href={`/cabin/${property.cabin_slug}`}
-            className="p-2.5 text-white no-underline"
+            className="p-2.5 !text-white !no-underline"
           >
             {property.gallery_images?.length}
           </Link>
         </div>
       </div>
 
-      <div className='flex justify-between w-full'>
-        <div className='flex flex-col'>
+      <div className='flex justify-between w-full mt-[6px]'>
+        <div className='flex flex-col  gap-[8px]'>
           {/* Title */}
           <div className="-mt-1.5 relative ml-1 text-[140%] mt-0">
             <Link href={`/cabin/${property.cabin_slug}`} className="text-[#7c2c00] underline">
@@ -76,17 +76,17 @@ export default function CabinCard({ property }: CabinCardProps) {
             </div>
           )}
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center max-[460px]:hidden">
           <button
             onClick={handleFavoriteClick}
-            className={`bg-center bg-no-repeat w-[100px] h-[30px] text-white text-[110%] transition-opacity ${
+            className={`flex bg-[center_right] bg-no-repeat w-[100px] h-[30px] text-white text-[110%] transition-opacity ${
               isPropertyFavorite 
                 ? "bg-[url('/images/icon_remove_favorite5.png')]" 
                 : "bg-[url('/images/icon_save_favorite5.png')]"
             }`}
             title={isPropertyFavorite ? 'Remove from comparison' : 'Add to comparison'}
           />
-          <div className="flex mt-5 justify-center items-center gap-[3px]">
+          <div className="flex mt-5 justify-end items-center gap-[3px] min-w-[267px]">
             {property.amenities?.map((amenity) => (
               <Image
                 key={amenity.name}

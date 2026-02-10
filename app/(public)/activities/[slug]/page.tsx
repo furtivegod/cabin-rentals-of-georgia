@@ -51,54 +51,59 @@ async function ActivitiesContent({ slug }: { slug: string }) {
     })
 
     return (
-      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
-        <h1 className="text-4xl mb-8">{title}</h1>
+      <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5 block">
+        <h1 >{title}</h1>
         <ProcessedHTML
           html={term.description?.replaceAll("https://www.cabin-rentals-of-georgia.com", "") || 'No description available'}
-          className="prose prose-lg mx-auto mb-8 block"
+          className="prose prose-lg mx-auto mb-8"
         />
-        
+
         {activitiesData.activities.length === 0 ? (
           <div className="text-center py-10">
-            <p className="text-[#533e27] text-lg">
+            <p className="text-[#533e27]">
               No activities found for this category.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 max-[767px]:grid-cols-1 md:grid-cols-2 gap-6">
             {activitiesData.activities.map((activity) => (
-              <div key={activity.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                {activity.featured_image_url && (
-                  <div className="relative w-full h-48">
-                    <Image
-                      src={activity.featured_image_url}
-                      alt={activity.featured_image_alt || activity.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold text-[#7c2c00] mb-2">
-                    <Link 
-                      href={activity.activity_slug ? `/activity/${activity.activity_slug}` : `/activity/${activity.slug}`} 
-                      className="hover:underline"
-                    >
-                      {activity.title}
-                    </Link>
-                  </h3>
-                  {activity.body_summary && (
-                    <p className="text-[#533e27] text-sm mb-2 line-clamp-3">
-                      {activity.body_summary.replace(/<[^>]*>/g, '')}
-                    </p>
-                  )}
-                  {activity.area && (
-                    <p className="text-[#533e27] text-xs">
-                      Location: {activity.area}
-                    </p>
+              <Link
+                key={activity.id}
+                href={activity.activity_slug ? `/activity/${activity.activity_slug}` : `/activity/${activity.slug}`}
+                className="block group"
+                
+              >
+                <div className="relative w-full max-[767px]:max-w-[235px] max-[767px]:mx-auto overflow-hidden" style={{ boxShadow: '0px 0px 7px #333' }}>
+                  {activity.featured_image_url ? (
+                    <>
+                      <div className="relative">
+                        <Image
+                          src={activity.featured_image_url.replace("/sites/default/files/", "/images/styles/activities_listing/public/")}
+                          alt={activity.featured_image_alt || activity.title}
+                          width={609}
+                          height={390}
+                          className="w-full h-auto bg-transparent p-[3px] shadow-lg"
+                        />
+                        {/* Text Overlay */}
+                        <div className="absolute flex flex-col justify-end p-4 left-0 bottom-0">
+                          <h3 className="text-white text-[120%] no-underline hover:underline m-0">
+                            {activity.title}
+                          </h3>
+                          <span className="text-white italic text-[110%]">
+                            {term.name}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full bg-gray-200 flex items-center justify-center p-8">
+                      <p className="text-[#533e27] font-semibold text-center px-4">
+                        {activity.title}
+                      </p>
+                    </div>
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -110,11 +115,11 @@ async function ActivitiesContent({ slug }: { slug: string }) {
     return (
       <div className="mb-[-1px] min-h-full mt-0 relative h-auto pb-[30px] align-top py-5 px-5">
         <div className="mb-8">
-          <h1 className="font-normal italic text-[220%] text-[#7c2c00] leading-[100%] my-[15px] mx-0">
+          <h1 className="font-normal italic text-[#7c2c00] leading-[100%] my-[15px] mx-0">
             <em>Activities</em>
           </h1>
           <div className="text-center py-10">
-            <p className="text-[#533e27] text-lg">
+            <p className="text-[#533e27]">
               {error?.response?.status === 404
                 ? 'Page not found. Please check the URL and try again.'
                 : 'Unable to load page content. Please try again later.'}
